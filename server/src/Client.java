@@ -61,7 +61,7 @@ public class Client implements Runnable {
 		case "JOIN_ROOM":
 			if (params.length == 1) {
 				sendError("Please enter room id");
-				Server.log("Invalid opcode: " + input + ", missing room_id");
+				Server.log("Invalid packet: " + input + ", missing room_id");
 				break;
 			}
 
@@ -125,17 +125,15 @@ public class Client implements Runnable {
 			break;
 
 		case "MOVE":
-			// TODO
-			break;
 		case "SHOOT":
-			// TODO
-			break;
 		case "SET_TRAP":
-			// TODO
+			room = RoomManager.singleton().findRoomById(currentRoomId);
+			room.broadcast(input);
 			break;
+			
 		default:
-			sendError("Invalid opcode " + input);
-			Server.log("Invalid opcode: " + input);
+			sendError("Invalid packet " + input);
+			Server.log("Invalid packet: " + input);
 			break;
 		}
 	}
