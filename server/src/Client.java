@@ -10,7 +10,9 @@ public class Client implements Runnable {
 	private BufferedReader reader;
 	private DataOutputStream writer;
 	private boolean running = false;
+	
 	private String currentRoomId = null;
+	private int currentTeamNumber = 0;
 
 	public Client(Socket socket) {
 		this.socket = socket;
@@ -30,6 +32,18 @@ public class Client implements Runnable {
 
 	public DataOutputStream getWriter() {
 		return writer;
+	}
+
+	public String getRoomId() {
+		return currentRoomId;
+	}
+	
+	public int getTeamNumber() {
+		return currentTeamNumber;
+	}
+
+	public void setTeamNumber(int currentTeamNumber) {
+		this.currentTeamNumber = currentTeamNumber;
 	}
 
 	public void sendMessage(String message) throws IOException {
@@ -66,14 +80,14 @@ public class Client implements Runnable {
 			}
 
 			roomId = params[1];
-			room = RoomManager.singleton().findRoomById(roomId);
-
+			room = RoomManager.singleton().findRoom(roomId);
+			
 			if (room == null) {
 				sendError("Invalid room id " + roomId);
 				Server.log("Client#" + name + " fails to join room#" + roomId + ", no room found");
 				break;
 			}
-
+			
 			if (room.isFull()) {
 				sendError("Room#" + roomId + " is full");
 				Server.log("Client#" + name + " fails to join room#" + roomId + ", room is full");
@@ -101,8 +115,8 @@ public class Client implements Runnable {
 			Server.log("Client#" + name + " joins room#" + roomId);
 			break;
 
-		case "LEAVE_ROOM":
-			room = RoomManager.singleton().findRoomById(currentRoomId);
+		case "EXIT_ROOM":
+			room = RoomManager.singleton().findRoom(currentRoomId);
 
 			if (room == null || !room.hasClient(this)) {
 				sendError("Not in any room");
@@ -127,10 +141,10 @@ public class Client implements Runnable {
 		case "MOVE":
 		case "SHOOT":
 		case "SET_TRAP":
-			room = RoomManager.singleton().findRoomById(currentRoomId);
+			room = RoomManager.singleton().findRoom(currentRoomId);
 			room.broadcast(input);
 			break;
-			
+
 		default:
 			sendError("Invalid packet " + input);
 			Server.log("Invalid packet: " + input);
@@ -149,6 +163,36 @@ public class Client implements Runnable {
 		Client c = (Client) o;
 		return name.equals(c.getName());
 	}
+	
+	public void closeConnection() {
+		try {
+			Server.log("Client#" + name + " has left");
+			reader.close();
+			writer.close();
+			socket.close();
+			ClientManager.singleton().removeClient(this);
+
+			if (currentRoomId == null)
+				return;
+
+			Room currentRoom = RoomManager.singleton().findRoom(currentRoomId);
+			if (currentRoom != null) {
+				currentRoom.removeClient(this);
+			}
+			
+			synchronized (this) {
+				if (currentRoom.isEmpty()) {
+					RoomManager.singleton().removeRoom(currentRoom);
+					Server.log("Destroy room#" + currentRoomId);
+				}
+			}
+
+			currentRoomId = null;
+
+		} catch (IOException e) {
+			Server.log(e.getMessage());
+		}
+	}
 
 	@Override
 	public void run() {
@@ -165,6 +209,9 @@ public class Client implements Runnable {
 
 				if (name == null)
 					return;
+				
+				if (name.isBlank())
+					continue;
 
 				if (!name.isBlank())
 					running = ClientManager.singleton().addClient(this);
@@ -183,33 +230,7 @@ public class Client implements Runnable {
 		} catch (Exception e) {
 			Server.log("Error handling client#" + name + ": " + e.getMessage());
 		} finally {
-			try {
-				Server.log("Client#" + name + " has left");
-				reader.close();
-				writer.close();
-				socket.close();
-				ClientManager.singleton().removeClient(this);
-
-				if (currentRoomId == null)
-					return;
-
-				synchronized (this) {
-					Room currentRoom = RoomManager.singleton().findRoomById(currentRoomId);
-					if (currentRoom != null) {
-						currentRoom.removeClient(this);
-
-						if (currentRoom.isEmpty()) {
-							RoomManager.singleton().removeRoom(currentRoom);
-							Server.log("Destroy room#" + currentRoomId);
-						}
-					}
-				}
-
-				currentRoomId = null;
-
-			} catch (IOException e) {
-				Server.log(e.getMessage());
-			}
+			closeConnection();
 		}
 	}
 }

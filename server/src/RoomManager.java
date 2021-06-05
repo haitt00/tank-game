@@ -21,11 +21,15 @@ public class RoomManager {
 	public synchronized Room generateRoom() {
 		Room r = new Room(String.valueOf(incrementId++));
 		addRoom(r);
+		startRoom(r);
 		return r;
 	}
 
-	public void addRoom(Room r) {
+	private void addRoom(Room r) {
 		rooms.add(r);
+	}
+	
+	private void startRoom(Room r) {
 		roomExecutor.execute(r);
 	}
 
@@ -33,12 +37,12 @@ public class RoomManager {
 		rooms.remove(r);
 	}
 
-	public void removeRoom(String id) {
-		Room r = findRoomById(id);
+	public void removeRoom(String roomId) {
+		Room r = findRoom(roomId);
 		removeRoom(r);
 	}
 
-	public Room findRoomById(String id) {
-		return rooms.stream().filter(r -> id.equals(r.getId())).findFirst().orElse(null);
+	public Room findRoom(String roomId) {
+		return rooms.stream().filter(r -> roomId.equals(r.getId())).findFirst().orElse(null);
 	}
 }
