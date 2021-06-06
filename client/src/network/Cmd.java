@@ -1,0 +1,15 @@
+package network;
+
+public enum Cmd{
+	NEW_ROOM,
+	JOIN_ROOM,
+	LEAVE_ROOM,
+	
+	SHOOT,
+	SET_TRAP,
+	
+	ROOM_CREATED,
+	JOIN_MEMBER,
+	ROOM_ACCEPTED,
+	LEAVE_MEMBER
+}
