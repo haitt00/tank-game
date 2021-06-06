@@ -195,7 +195,7 @@ public class Client implements Runnable {
 			roomId = null;
 
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
+			System.out.println("Error handling client#" + name + ": close connection");
 		}
 	}
 
