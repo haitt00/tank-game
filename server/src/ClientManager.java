@@ -43,6 +43,6 @@ public class ClientManager {
 	}
 
 	public Client findClientByName(String name) {
-		return clients.stream().filter(client -> name.equals(client.getName())).findFirst().orElse(null);
+		return clients.stream().filter(client -> client.getName().equals(name)).findFirst().orElse(null);
 	}
 }

@@ -6,16 +6,12 @@ public class Server {
 	public static final int SERVER_PORT = 5588;
 
 	public static void main(String[] args) throws IOException {
-		log("Server is running ...");
+		System.out.println("Server is running ...");
 		try (ServerSocket listener = new ServerSocket(SERVER_PORT)) {
 			while (true) {
 				Socket clientSocket = listener.accept();
 				ClientManager.singleton().acceptClient(new Client(clientSocket));
 			}
 		}
-	}
-	
-	public static void log(String message) {
-		System.out.println("# " + message);
 	}
 }

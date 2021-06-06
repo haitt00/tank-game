@@ -55,37 +55,26 @@ public class Room implements Runnable {
 		Collections.shuffle(clients);
 		for (int i = 0; i < clients.size(); i++) {
 			Client c = clients.get(i);
-			c.setTeamNumber(i % TEAMS_PER_ROOM + 1);
-			c.sendMessage("START_GAME", String.valueOf(i % TEAMS_PER_ROOM + 1));
+			c.setTeam(i % TEAMS_PER_ROOM + 1);
+			c.sendPacket("START_GAME", String.valueOf(i % TEAMS_PER_ROOM + 1));
 		}
 		running = true;
-		Server.log("Room#" + id + " starts game");
+		System.out.println("Room#" + id + " starts game");
 	}
 
 	public void endGame() {
 		running = false;
 	}
 
-	public void sendFromClientToOthers(Client client, String message) throws IOException {
-		for (Client c : clients) {
-			if (c.equals(client))
-				continue;
-			c.sendMessage(message);
-		}
-	}
-
-	public void sendToClient(Client client, String message) throws IOException {
-		for (Client c : clients) {
-			if (c.equals(client)) {
-				c.sendMessage(message);
-				break;
-			}
-		}
-	}
-
 	public void broadcast(String message) throws IOException {
 		for (Client c : clients) {
-			c.sendMessage(message);
+			c.sendPacket(message);
+		}
+	}
+	
+	public void broadcast(String opcode, String message) throws IOException {
+		for (Client c : clients) {
+			c.sendPacket(opcode, message);
 		}
 	}
 
@@ -103,19 +92,19 @@ public class Room implements Runnable {
 
 	@Override
 	public void run() {
-		Server.log("Room#" + id + " runs");
+		System.out.println("Room#" + id + " runs");
 		while (true) {
-			synchronized(this) {
+			synchronized (this) {
 				if (isFull()) {
 					try {
 						startGame();
 						break;
 					} catch (IOException e) {
-						Server.log(e.getMessage());
+						System.out.println("Error happens when starting game at room#" + id);
 					}
 				}
 			}
-			
+
 		}
 
 		while (running) {

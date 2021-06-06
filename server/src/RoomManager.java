@@ -43,6 +43,6 @@ public class RoomManager {
 	}
 
 	public Room findRoom(String roomId) {
-		return rooms.stream().filter(r -> roomId.equals(r.getId())).findFirst().orElse(null);
+		return rooms.stream().filter(r -> r.getId().equals(roomId)).findFirst().orElse(null);
 	}
 }
