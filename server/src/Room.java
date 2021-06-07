@@ -56,7 +56,7 @@ public class Room implements Runnable {
 		for (int i = 0; i < clients.size(); i++) {
 			Client c = clients.get(i);
 			c.setTeam(i % TEAMS_PER_ROOM + 1);
-			c.sendPacket("START_GAME", String.valueOf(i % TEAMS_PER_ROOM + 1));
+			c.sendPacket(Opcode.START_GAME, String.valueOf(i % TEAMS_PER_ROOM + 1));
 		}
 		running = true;
 		System.out.println("Room#" + id + " starts game");
@@ -87,7 +87,7 @@ public class Room implements Runnable {
 			return false;
 
 		Room r = (Room) o;
-		return id == r.getId();
+		return id.equals(r.getId());
 	}
 
 	@Override
@@ -100,11 +100,10 @@ public class Room implements Runnable {
 						startGame();
 						break;
 					} catch (IOException e) {
-						System.out.println("Error happens when starting game at room#" + id);
+						System.out.println("Error starting game at room#" + id);
 					}
 				}
 			}
-
 		}
 
 		while (running) {
