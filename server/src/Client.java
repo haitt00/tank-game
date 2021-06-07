@@ -181,9 +181,8 @@ public class Client implements Runnable {
 				return;
 
 			Room currentRoom = RoomManager.singleton().findRoom(roomId);
-			if (currentRoom != null) {
+			if (currentRoom != null)
 				currentRoom.removeClient(this);
-			}
 
 			synchronized (this) {
 				if (currentRoom.isEmpty()) {
@@ -193,6 +192,7 @@ public class Client implements Runnable {
 			}
 
 			roomId = null;
+			team = 0;
 
 		} catch (IOException e) {
 			System.out.println("Error handling client#" + name + ": close connection");
