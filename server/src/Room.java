@@ -55,12 +55,15 @@ public class Room implements Runnable {
 	}
 
 	public void startGame() throws IOException {
+		String teamId = null;
 		List<String> keys = new ArrayList<String>(clients.keySet());
 		Collections.shuffle(keys);
+
 		for (int i = 0; i < keys.size(); i++) {
 			Client c = clients.get(keys.get(i));
-			c.setTeamId(i % TEAMS_PER_ROOM + 1);
-			c.sendPacket(Opcode.START_GAME, String.valueOf(i % TEAMS_PER_ROOM + 1));
+			teamId = String.valueOf(i % TEAMS_PER_ROOM + 1);
+			c.setTeamId(teamId);
+			c.sendPacket(Opcode.START_GAME, teamId);
 		}
 		running = true;
 		System.out.println("Room#" + id + " starts game");
@@ -75,7 +78,7 @@ public class Room implements Runnable {
 			clients.get(key).sendPacket(message);
 		}
 	}
-	
+
 	public void broadcast(String opcode, String message) throws IOException {
 		for (String key : clients.keySet()) {
 			clients.get(key).sendPacket(opcode, message);

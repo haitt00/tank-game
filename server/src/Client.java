@@ -12,7 +12,7 @@ public class Client implements Runnable {
 	private boolean running = false;
 
 	private String roomId = null;
-	private int teamId = -1;
+	private String teamId = null;
 
 	public Client(Socket socket) {
 		this.socket = socket;
@@ -38,11 +38,11 @@ public class Client implements Runnable {
 		return roomId;
 	}
 
-	public int getTeamId() {
+	public String getTeamId() {
 		return teamId;
 	}
 
-	public void setTeamId(int teamId) {
+	public void setTeamId(String teamId) {
 		this.teamId = teamId;
 	}
 
@@ -114,6 +114,7 @@ public class Client implements Runnable {
 				System.out.println("Destroy room#" + roomId);
 			}
 			roomId = null;
+			teamId = null;
 		}
 	}
 
@@ -192,7 +193,7 @@ public class Client implements Runnable {
 			}
 
 			roomId = null;
-			teamId = 0;
+			teamId = null;
 
 		} catch (IOException e) {
 			System.out.println("Error handling client#" + name + ": close connection");

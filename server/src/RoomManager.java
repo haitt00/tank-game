@@ -6,7 +6,7 @@ import java.util.concurrent.Executors;
 public class RoomManager {
 	private Map<String, Room> rooms = new HashMap<String, Room>();
 	private ExecutorService roomExecutor = Executors.newCachedThreadPool();
-	private int incrementId = 0;
+	private int incRoomId = 0;
 
 	private static final RoomManager SINGLETON = new RoomManager();
 
@@ -18,9 +18,9 @@ public class RoomManager {
 	}
 
 	public synchronized Room generateRoom() {
-		Room r = new Room(String.valueOf(incrementId++));
+		Room r = new Room(String.valueOf(incRoomId++));
 		addRoom(r);
-		startRoom(r);
+		acceptRoom(r);
 		return r;
 	}
 
@@ -28,7 +28,7 @@ public class RoomManager {
 		rooms.put(r.getId(), r);
 	}
 	
-	private void startRoom(Room r) {
+	private void acceptRoom(Room r) {
 		roomExecutor.execute(r);
 	}
 
