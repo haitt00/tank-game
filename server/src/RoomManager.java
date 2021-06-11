@@ -1,17 +1,16 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class RoomManager {
-	private List<Room> rooms;
-	private int incrementId = 0;
+	private Map<String, Room> rooms = new HashMap<String, Room>();
 	private ExecutorService roomExecutor = Executors.newCachedThreadPool();
+	private int incrementId = 0;
 
 	private static final RoomManager SINGLETON = new RoomManager();
 
 	private RoomManager() {
-		rooms = new ArrayList<Room>();
 	}
 
 	public static RoomManager singleton() {
@@ -26,23 +25,22 @@ public class RoomManager {
 	}
 
 	private void addRoom(Room r) {
-		rooms.add(r);
+		rooms.put(r.getId(), r);
 	}
 	
 	private void startRoom(Room r) {
 		roomExecutor.execute(r);
 	}
 
-	public void removeRoom(Room r) {
-		rooms.remove(r);
-	}
-
 	public void removeRoom(String roomId) {
-		Room r = findRoom(roomId);
-		removeRoom(r);
+		rooms.remove(roomId);
+	}
+	
+	public boolean hasRoom(Room r) {
+		return rooms.containsKey(r.getId());
 	}
 
 	public Room findRoom(String roomId) {
-		return rooms.stream().filter(r -> r.getId().equals(roomId)).findFirst().orElse(null);
+		return rooms.get(roomId);
 	}
 }
