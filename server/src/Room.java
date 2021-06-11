@@ -30,7 +30,7 @@ public class Room implements Runnable {
 		return running;
 	}
 
-	public Client findClientByName(String clientName) {
+	public Client findClient(String clientName) {
 		return clients.get(clientName);
 	}
 
