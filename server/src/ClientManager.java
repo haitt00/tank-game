@@ -21,6 +21,10 @@ public class ClientManager {
 	public void registerClientListener(ClientListener cl) {
 		clientListeners.put(cl.getClient().getName(), cl);
 	}
+	
+	public void unregisterClientListener(String clientName) {
+		clientListeners.remove(clientName);
+	}
 
 	public synchronized boolean addClient(Client c) {
 		if (!hasClient(c)) {
