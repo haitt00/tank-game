@@ -52,6 +52,7 @@ public class Client implements Runnable {
 
 	public void sendPacket(String opcode, String message) throws IOException {
 		writer.writeBytes(opcode + " " + message + "\n");
+		System.out.println(opcode + " " + message + "\n");
 	}
 
 	public void sendError(String errorMessage) throws IOException {
@@ -233,6 +234,7 @@ public class Client implements Runnable {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Error handling client#" + name + ": " + e.getMessage());
 		} finally {
 			closeConnection();

@@ -13,6 +13,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import logic.Constants;
+import main.Main;
 
 public abstract class GeneralScreen extends JFrame{
 	JMenuBar menuBar;
@@ -41,13 +42,16 @@ public abstract class GeneralScreen extends JFrame{
 		addMenuBar();
 		
 		addMainPanel();
-		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle(Constants.GAME_TITLE);
 		setSize(Constants.WIDTH, Constants.HEIGHT);
 		setVisible(true);
+		if(Main.getCurrentScreen()!=null) {
+			Main.getCurrentScreen().dispose();
+		}
+		Main.setCurrentScreen(this);
 	}
-	private void addMainPanel() {
+	public void addMainPanel() {
 		initMainPanel();
 		Container cp = getContentPane();
 		cp.add(mainPanel, BorderLayout.CENTER);
