@@ -8,32 +8,29 @@ public class RoomManager {
 	private ExecutorService roomExecutor = Executors.newCachedThreadPool();
 	private int incRoomId = 0;
 
-	private static final RoomManager SINGLETON = new RoomManager();
-
-	private RoomManager() {
-	}
-
-	public static RoomManager singleton() {
-		return SINGLETON;
+	public RoomManager() {
+		this.rooms = new HashMap<String, Room>();
+		this.roomExecutor = Executors.newCachedThreadPool();
 	}
 
 	public synchronized Room generateRoom() {
 		Room r = new Room(String.valueOf(incRoomId++));
 		addRoom(r);
-		acceptRoom(r);
+		executeRoom(r);
 		return r;
 	}
 
-	private void addRoom(Room r) {
+	public void addRoom(Room r) {
 		rooms.put(r.getId(), r);
 	}
 	
-	private void acceptRoom(Room r) {
+	public void executeRoom(Room r) {
 		roomExecutor.execute(r);
 	}
 
 	public void removeRoom(String roomId) {
 		rooms.remove(roomId);
+		System.out.println("Destroy room#" + roomId);
 	}
 	
 	public boolean hasRoom(Room r) {
