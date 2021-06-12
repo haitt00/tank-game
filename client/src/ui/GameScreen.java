@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 import logic.Game;
 
-public class GameScreen extends GeneralScreen{
+public class GameScreen extends GeneralScene{
 	
 	KeyListener keyListener;
 	Game game;

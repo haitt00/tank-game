@@ -2,26 +2,31 @@ package main;
 import javax.swing.JFrame;
 
 import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
+import logic.Constants;
 import network.Client;
+import ui.GeneralScene;
 import ui.LogOnScreen;
 
 public class Main extends Application{
-	private static JFrame currentScreen;
+	private static Scene currentScreen;
 	public static void main(String[] args) {
-		new Thread(Client.getInstance()).start();
-		System.out.println("Client is running...");
+		launch(args);
+//		new Thread(Client.getInstance()).start();
+//		System.out.println("Client is running...");
 	}
-	public static JFrame getCurrentScreen() {
+	public static Scene getCurrentScreen() {
 		return currentScreen;
 	}
-	public static void setCurrentScreen(JFrame currentScreen) {
+	public static void setCurrentScreen(Scene currentScreen) {
 		Main.currentScreen = currentScreen;
 	}
-	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// TODO Auto-generated method stub
+		primaryStage.setScene(new GeneralScene());
+		primaryStage.setTitle(Constants.GAME_TITLE);
+		primaryStage.show();
 		
 	}
 	

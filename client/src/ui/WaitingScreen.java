@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 import network.Client;
 
-public class WaitingScreen extends GeneralScreen{
+public class WaitingScreen extends GeneralScene{
 	
 	JLabel roomlbl;
 	JLabel[] playerslbl;

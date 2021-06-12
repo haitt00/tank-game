@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 
 import main.Main;
 import network.Client;
-public class LogOnScreen extends GeneralScreen{
+public class LogOnScreen extends GeneralScene{
 	JTextField name;
 	public LogOnScreen() {
 		super();

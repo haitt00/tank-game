@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 
 import network.Client;
 
-public class LobbyScreen extends GeneralScreen{
+public class LobbyScreen extends GeneralScene{
 	private JLabel namelbl;
 	private JTextField roomId;
 	public LobbyScreen() {
