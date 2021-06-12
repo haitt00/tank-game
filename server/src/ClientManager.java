@@ -4,20 +4,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ClientManager {
-	private Map<String, Client> clients = new HashMap<String, Client>();
-	private ExecutorService clientExecutor = Executors.newCachedThreadPool();
+	private Map<String, Client> clients;
+	private Map<String, ClientListener> clientListeners;
+	private ExecutorService clientExecutor;
 
-	private static final ClientManager SINGLETON = new ClientManager();
-
-	private ClientManager() {
+	public ClientManager() {
+		this.clients = new HashMap<String, Client>();
+		this.clientListeners = new HashMap<String, ClientListener>();
+		this.clientExecutor = Executors.newCachedThreadPool();
 	}
 
-	public static ClientManager singleton() {
-		return SINGLETON;
+	public void executeClientListener(ClientListener cl) {
+		clientExecutor.execute(cl);
 	}
-
-	public void acceptClient(Client c) {
-		clientExecutor.execute(c);
+	
+	public void registerClientListener(ClientListener cl) {
+		clientListeners.put(cl.getClient().getName(), cl);
 	}
 
 	public synchronized boolean addClient(Client c) {
@@ -30,6 +32,7 @@ public class ClientManager {
 
 	public void removeClient(String clientName) {
 		clients.remove(clientName);
+		System.out.println("Client#" + clientName + " has left");
 	}
 
 	public boolean hasClient(Client c) {
@@ -38,5 +41,9 @@ public class ClientManager {
 
 	public Client findClient(String name) {
 		return clients.get(name);
+	}
+	
+	public ClientListener getClientListener(String clientName) {
+		return clientListeners.get(clientName);
 	}
 }
