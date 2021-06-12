@@ -44,7 +44,7 @@ public class GameServer extends Thread {
 		return maxPlayers;
 	}
 
-	public ClientManager getClientManger() {
+	public ClientManager getClientManager() {
 		return clientManager;
 	}
 

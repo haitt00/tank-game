@@ -25,20 +25,21 @@ public class Commander {
 	}
 	
 	public void requestRegisterClientListener(ClientListener cl) {
-		gameServer.getClientManger().registerClientListener(cl);
+		gameServer.getClientManager().registerClientListener(cl);
 	}
 	
 	public ClientListener requestFindClientListener(String clientName) {
-		return gameServer.getClientManger().getClientListener(clientName);
+		return gameServer.getClientManager().getClientListener(clientName);
 	}
 
 	public boolean requestAddClient(Client c) {
 		this.client = c;
-		return gameServer.getClientManger().addClient(c);
+		return gameServer.getClientManager().addClient(c);
 	}
 
 	public void requestRemoveClient(String clientName) {
-		gameServer.getClientManger().removeClient(clientName);
+		gameServer.getClientManager().removeClient(clientName);
+		gameServer.getClientManager().unregisterClientListener(clientName);
 		client.setRoomId(null);
 		client.setTeamId(null);
 	}
