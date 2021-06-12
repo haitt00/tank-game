@@ -12,7 +12,7 @@ public class Client implements Runnable {
 	private boolean running = false;
 
 	private String roomId = null;
-	private int team = 0;
+	private String teamId = null;
 
 	public Client(Socket socket) {
 		this.socket = socket;
@@ -38,12 +38,12 @@ public class Client implements Runnable {
 		return roomId;
 	}
 
-	public int getTeam() {
-		return team;
+	public String getTeamId() {
+		return teamId;
 	}
 
-	public void setTeam(int currentTeamNumber) {
-		this.team = currentTeamNumber;
+	public void setTeamId(String teamId) {
+		this.teamId = teamId;
 	}
 
 	public void sendPacket(String message) throws IOException {
@@ -79,8 +79,8 @@ public class Client implements Runnable {
 			return;
 		}
 
-		if (this.roomId != null || room.hasClient(this)) {
-			sendError("You're already in room#" + this.roomId);
+		if (room.hasClient(this)) {
+			sendError("You're already in room#" + roomId);
 			System.out.println("Client#" + name + " fails to join room#" + roomId + ", already in room#" + roomId);
 			return;
 		}
@@ -88,8 +88,8 @@ public class Client implements Runnable {
 		this.roomId = roomId;
 		room.broadcast(Opcode.JOIN_MEMBER, name);
 		String currentMembers = "";
-		for (Client client : room.getClients()) {
-			currentMembers += client.getName() + ",";
+		for (String clientName : room.getClients()) {
+			currentMembers += clientName + ",";
 		}
 		currentMembers += name;
 
@@ -106,15 +106,16 @@ public class Client implements Runnable {
 			return;
 		}
 
-		room.removeClient(this);
+		room.removeClient(name);
 		room.broadcast(Opcode.LEAVE_MEMBER, name);
 		System.out.println("Client#" + name + " left room#" + roomId);
 		synchronized (this) {
 			if (room.isEmpty()) {
-				RoomManager.singleton().removeRoom(room);
+				RoomManager.singleton().removeRoom(roomId);
 				System.out.println("Destroy room#" + roomId);
 			}
 			roomId = null;
+			teamId = null;
 		}
 	}
 
@@ -123,11 +124,11 @@ public class Client implements Runnable {
 		String opcode = params[0];
 
 		switch (opcode) {
-		
+
 		case Opcode.NEW_ROOM:
 			createRoom();
 			break;
-			
+
 		case Opcode.JOIN_ROOM:
 			if (params.length == 1) {
 				sendError("Please enter room id");
@@ -175,25 +176,25 @@ public class Client implements Runnable {
 			reader.close();
 			writer.close();
 			socket.close();
-			ClientManager.singleton().removeClient(this);
+			ClientManager.singleton().removeClient(name);
 			System.out.println("Client#" + name + " has left");
 
 			if (roomId == null)
 				return;
 
 			Room currentRoom = RoomManager.singleton().findRoom(roomId);
-			if (currentRoom != null) {
-				currentRoom.removeClient(this);
-			}
+			if (currentRoom != null)
+				currentRoom.removeClient(name);
 
 			synchronized (this) {
 				if (currentRoom.isEmpty()) {
-					RoomManager.singleton().removeRoom(currentRoom);
+					RoomManager.singleton().removeRoom(roomId);
 					System.out.println("Destroy room#" + roomId);
 				}
 			}
 
 			roomId = null;
+			teamId = null;
 
 		} catch (IOException e) {
 			System.out.println("Error handling client#" + name + ": close connection");
@@ -219,8 +220,7 @@ public class Client implements Runnable {
 				if (name.isBlank())
 					continue;
 
-				if (!name.isBlank())
-					running = ClientManager.singleton().addClient(this);
+				running = ClientManager.singleton().addClient(this);
 
 				if (running) {
 					sendPacket(Opcode.CLIENT_ACCEPTED, name);

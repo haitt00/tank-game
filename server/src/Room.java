@@ -1,11 +1,14 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Room implements Runnable {
 	private String id;
-	private List<Client> clients = new ArrayList<Client>();
+	private Map<String, Client> clients = new HashMap<String, Client>();
 	private boolean running = false;
 
 	public static final int CLIENTS_PER_ROOM = 4;
@@ -19,28 +22,28 @@ public class Room implements Runnable {
 		return id;
 	}
 
-	public List<Client> getClients() {
-		return clients;
+	public Set<String> getClients() {
+		return clients.keySet();
 	}
 
 	public boolean isRunning() {
 		return running;
 	}
 
-	public Client findClientByName(String name) {
-		return clients.stream().filter(client -> name.equals(client.getName())).findFirst().orElse(null);
+	public Client findClient(String clientName) {
+		return clients.get(clientName);
 	}
 
-	public synchronized void addClient(Client client) {
-		clients.add(client);
+	public synchronized void addClient(Client c) {
+		clients.put(c.getName(), c);
 	}
 
-	public void removeClient(Client client) {
-		clients.remove(client);
+	public void removeClient(String clientName) {
+		clients.remove(clientName);
 	}
 
-	public boolean hasClient(Client client) {
-		return clients.contains(client);
+	public boolean hasClient(Client c) {
+		return clients.containsKey(c.getName());
 	}
 
 	public boolean isFull() {
@@ -52,11 +55,15 @@ public class Room implements Runnable {
 	}
 
 	public void startGame() throws IOException {
-		Collections.shuffle(clients);
-		for (int i = 0; i < clients.size(); i++) {
-			Client c = clients.get(i);
-			c.setTeam(i % TEAMS_PER_ROOM + 1);
-			c.sendPacket("START_GAME", String.valueOf(i % TEAMS_PER_ROOM + 1));
+		String teamId = null;
+		List<String> keys = new ArrayList<String>(clients.keySet());
+		Collections.shuffle(keys);
+
+		for (int i = 0; i < keys.size(); i++) {
+			Client c = clients.get(keys.get(i));
+			teamId = String.valueOf(i % TEAMS_PER_ROOM + 1);
+			c.setTeamId(teamId);
+			c.sendPacket(Opcode.START_GAME, teamId);
 		}
 		running = true;
 		System.out.println("Room#" + id + " starts game");
@@ -67,14 +74,14 @@ public class Room implements Runnable {
 	}
 
 	public void broadcast(String message) throws IOException {
-		for (Client c : clients) {
-			c.sendPacket(message);
+		for (String key : clients.keySet()) {
+			clients.get(key).sendPacket(message);
 		}
 	}
-	
+
 	public void broadcast(String opcode, String message) throws IOException {
-		for (Client c : clients) {
-			c.sendPacket(opcode, message);
+		for (String key : clients.keySet()) {
+			clients.get(key).sendPacket(opcode, message);
 		}
 	}
 
@@ -87,7 +94,7 @@ public class Room implements Runnable {
 			return false;
 
 		Room r = (Room) o;
-		return id == r.getId();
+		return id.equals(r.getId());
 	}
 
 	@Override
@@ -100,11 +107,10 @@ public class Room implements Runnable {
 						startGame();
 						break;
 					} catch (IOException e) {
-						System.out.println("Error happens when starting game at room#" + id);
+						System.out.println("Error starting game at room#" + id);
 					}
 				}
 			}
-
 		}
 
 		while (running) {
