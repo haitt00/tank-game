@@ -16,12 +16,16 @@ public class ClientManager {
 		clientExecutor.execute(cl);
 	}
 	
-	public void registerWriter(ClientWriter cw) {
-		clientWriters.put(cw.getClient().getName(), cw);
+	public void registerWriter(String clientName, ClientWriter cw) {
+		clientWriters.put(clientName, cw);
 	}
 	
 	public void unregisterWriter(String clientName) {
 		clientWriters.remove(clientName);
+	}
+	
+	public ClientWriter getClientWriter(String clientName) {
+		return clientWriters.get(clientName);
 	}
 
 	public synchronized boolean addClient(Client c) {
@@ -43,9 +47,5 @@ public class ClientManager {
 
 	public ClientWriter findClient(String name) {
 		return clientWriters.get(name);
-	}
-	
-	public ClientWriter getClientWriter(String clientName) {
-		return clientWriters.get(clientName);
 	}
 }

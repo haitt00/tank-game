@@ -24,8 +24,8 @@ public class Commander {
 		return Opcode.ERROR + " " + errorMessage;
 	}
 	
-	public void requestRegisterClientWriter(ClientWriter cw) {
-		gameServer.getClientManager().registerWriter(cw);
+	public void requestRegisterClientWriter(String clientName, ClientWriter cw) {
+		gameServer.getClientManager().registerWriter(clientName, cw);
 	}
 	
 	public ClientWriter requestFindClientWriter(String clientName) {
@@ -87,8 +87,8 @@ public class Commander {
 		}
 		currentMembers += client.getName();
 
-		ClientWriter newWriter = requestFindClientWriter(client.getName());
-		room.addClientWriter(newWriter);
+		room.addClient(client);
+		room.addClientWriter(client.getName(), requestFindClientWriter(client.getName()));
 
 		System.out.println("Client#" + client.getName() + " joins room#" + roomId);
 		return toSyntax(Opcode.ROOM_ACCEPTED, roomId + " " + currentMembers);

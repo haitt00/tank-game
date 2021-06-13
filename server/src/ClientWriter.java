@@ -3,19 +3,10 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class ClientWriter {
-	private Client client;
 	private DataOutputStream writer;
 
 	public ClientWriter(Socket socket) throws IOException {
 		this.writer = new DataOutputStream(socket.getOutputStream());
-	}
-	
-	public Client getClient() {
-		return client;
-	}
-	
-	public void setClient(Client client) {
-		this.client = client;
 	}
 	
 	public void close() throws IOException{

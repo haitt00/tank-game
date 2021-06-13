@@ -72,13 +72,11 @@ public class ClientListener extends Thread {
 				if (name.isBlank())
 					continue;
 
-				Client newClient = new Client(name);
-				running = commander.requestAddClient(newClient);
+				running = commander.requestAddClient(new Client(name));
 
 				if (running) {
-					writer.setClient(newClient);
 					writer.sendPacket(Opcode.CLIENT_ACCEPTED, name);
-					commander.requestRegisterClientWriter(writer);
+					commander.requestRegisterClientWriter(name, writer);
 					break;
 				}
 			}

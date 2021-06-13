@@ -8,6 +8,7 @@ import java.util.Set;
 
 public class Room implements Runnable {
 	private String id;
+	private Map<String, Client> clients = new HashMap<String, Client>();
 	private Map<String, ClientWriter> clientWriters = new HashMap<String, ClientWriter>();
 	private boolean running = false;
 
@@ -31,27 +32,32 @@ public class Room implements Runnable {
 	}
 
 	public Client findClient(String clientName) {
-		return clientWriters.get(clientName).getClient();
+		return clients.get(clientName);
+	}
+	
+	public synchronized void addClient(Client c) {
+		clients.put(c.getName(), c);
 	}
 
-	public synchronized void addClientWriter(ClientWriter cw) {
-		clientWriters.put(cw.getClient().getName(), cw);
+	public synchronized void addClientWriter(String clientName, ClientWriter cw) {
+		clientWriters.put(clientName, cw);
 	}
 
 	public void removeClient(String clientName) {
+		clients.remove(clientName);
 		clientWriters.remove(clientName);
 	}
 
 	public boolean hasClient(Client c) {
-		return clientWriters.containsKey(c.getName());
+		return clients.containsKey(c.getName());
 	}
 
 	public boolean isFull() {
-		return clientWriters.size() == CLIENTS_PER_ROOM;
+		return clients.size() == CLIENTS_PER_ROOM;
 	}
 
 	public boolean isEmpty() {
-		return clientWriters.size() == 0;
+		return clients.size() == 0;
 	}
 
 	public void startGame() throws IOException {
@@ -62,7 +68,7 @@ public class Room implements Runnable {
 		for (int i = 0; i < keys.size(); i++) {
 			ClientWriter cw = clientWriters.get(keys.get(i));
 			teamId = String.valueOf(i % TEAMS_PER_ROOM + 1);
-			cw.getClient().setTeamId(teamId);
+			clients.get(keys.get(i)).setTeamId(teamId);
 			cw.sendPacket(Opcode.START_GAME, teamId);
 		}
 		running = true;
