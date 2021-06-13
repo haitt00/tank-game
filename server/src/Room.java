@@ -34,7 +34,7 @@ public class Room implements Runnable {
 	public Client findClient(String clientName) {
 		return clients.get(clientName);
 	}
-	
+
 	public synchronized void addClient(Client c) {
 		clients.put(c.getName(), c);
 	}

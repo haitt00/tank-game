@@ -22,7 +22,7 @@ public class ClientListener extends Thread {
 	public Client getClient() {
 		return commander.getClient();
 	}
-	
+
 	public ClientWriter getWriter() {
 		return writer;
 	}
@@ -72,11 +72,10 @@ public class ClientListener extends Thread {
 				if (name.isBlank())
 					continue;
 
-				running = commander.requestAddClient(new Client(name));
+				running = commander.requestRegisterClientWriter(new Client(name), writer);
 
 				if (running) {
 					writer.sendPacket(Opcode.CLIENT_ACCEPTED, name);
-					commander.requestRegisterClientWriter(name, writer);
 					break;
 				}
 			}
@@ -84,15 +83,15 @@ public class ClientListener extends Thread {
 			while (running) {
 				String input = reader.readLine();
 				String result = commander.parseCommand(input);
-				
+
 				if (result == null)
 					continue;
-				
+
 				if (result.equals(Opcode.EXIT_GAME.name())) {
 					running = false;
 					break;
 				}
-			
+
 				writer.sendPacket(result);
 			}
 

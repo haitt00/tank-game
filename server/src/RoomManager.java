@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class RoomManager {
-	private int maxRooms = 3;
+	private int maxRooms = 100;
 	private Map<String, Room> rooms = new HashMap<String, Room>();
 	private ExecutorService roomExecutor = Executors.newCachedThreadPool();
 	private int incRoomId = 0;
@@ -27,7 +27,7 @@ public class RoomManager {
 	public void addRoom(Room r) {
 		rooms.put(r.getId(), r);
 	}
-	
+
 	public void executeRoom(Room r) {
 		roomExecutor.execute(r);
 	}
@@ -36,7 +36,7 @@ public class RoomManager {
 		rooms.remove(roomId);
 		System.out.println("Destroy room#" + roomId);
 	}
-	
+
 	public boolean hasRoom(Room r) {
 		return rooms.containsKey(r.getId());
 	}

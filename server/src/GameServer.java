@@ -8,13 +8,13 @@ public class GameServer extends Thread {
 	private ClientManager clientManager;
 	private RoomManager roomManager;
 	private ServerSocket listener;
-	
+
 	public GameServer(int port) {
 		this.serverPort = port;
 		this.clientManager = new ClientManager();
 		this.roomManager = new RoomManager();
 	}
-	
+
 	public GameServer(int port, String serverName) {
 		this(port);
 		this.serverName = serverName;
@@ -42,7 +42,7 @@ public class GameServer extends Thread {
 		try {
 			listener = new ServerSocket(serverPort);
 		} catch (IOException e) {
-			System.out.println("Error starting server [" + serverName + ":" + serverPort +"]");
+			System.out.println("Error starting server [" + serverName + ":" + serverPort + "]");
 		}
 
 		while (true) {

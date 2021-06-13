@@ -23,32 +23,30 @@ public class Commander {
 	public String toErrorSyntax(String errorMessage) {
 		return Opcode.ERROR + " " + errorMessage;
 	}
-	
-	public void requestRegisterClientWriter(String clientName, ClientWriter cw) {
-		gameServer.getClientManager().registerWriter(clientName, cw);
+
+	public boolean requestRegisterClientWriter(Client c, ClientWriter cw) {
+		boolean status = gameServer.getClientManager().registerWriter(c.getName(), cw);
+		if (status)
+			this.client = c;
+
+		return status;
 	}
-	
+
 	public ClientWriter requestFindClientWriter(String clientName) {
 		return gameServer.getClientManager().getClientWriter(clientName);
 	}
 
-	public boolean requestAddClient(Client c) {
-		this.client = c;
-		return gameServer.getClientManager().addClient(c);
-	}
-
 	public void requestDisconnectClient() {
-		gameServer.getClientManager().removeClient(client.getName());
 		gameServer.getClientManager().unregisterWriter(client.getName());
 		client.setRoomId(null);
 		client.setTeamId(null);
 	}
-	
+
 	public String requestCreateRoom() {
 		Room room = gameServer.getRoomManager().generateRoom();
-		if (room == null) 
+		if (room == null)
 			return toErrorSyntax("Server overload");
-		
+
 		System.out.println("Client#" + client.getName() + " creates new room#" + room.getId());
 		return toSyntax(Opcode.ROOM_CREATED, room.getId());
 	}
@@ -102,12 +100,13 @@ public class Commander {
 
 		room.removeClient(client.getName());
 		room.broadcast(Opcode.LEAVE_MEMBER, client.getName());
+		System.out.println("Client#" + client.getName() + " left room#" + client.getRoomId());
+
 		synchronized (this) {
 			if (room.isEmpty())
 				requestRemoveRoom(client.getRoomId());
 		}
-		
-		System.out.println("Client#" + client.getName() + " left room#" + client.getRoomId());
+
 		client.setRoomId(null);
 		client.setTeamId(null);
 		return null;
@@ -127,7 +126,7 @@ public class Commander {
 			}
 			return requestJoinRoom(params[1]);
 		}
-		
+
 		if (Opcode.EXIT_ROOM.name().equals(opcode))
 			return requestExitRoom();
 
@@ -140,7 +139,7 @@ public class Commander {
 			room.broadcast(command);
 			return null;
 		}
-		
+
 		System.out.println("Invalid packet: " + command);
 		return toErrorSyntax("Invalid packet: " + command);
 	}

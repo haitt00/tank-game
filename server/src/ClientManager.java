@@ -15,37 +15,25 @@ public class ClientManager {
 	public void executeListener(ClientListener cl) {
 		clientExecutor.execute(cl);
 	}
-	
-	public void registerWriter(String clientName, ClientWriter cw) {
-		clientWriters.put(clientName, cw);
-	}
-	
-	public void unregisterWriter(String clientName) {
-		clientWriters.remove(clientName);
-	}
-	
+
 	public ClientWriter getClientWriter(String clientName) {
 		return clientWriters.get(clientName);
 	}
 
-	public synchronized boolean addClient(Client c) {
-		if (!hasClient(c)) {
-			clientWriters.put(c.getName(), null);
+	public synchronized boolean registerWriter(String clientName, ClientWriter cw) {
+		if (!hasClient(clientName)) {
+			clientWriters.put(clientName, cw);
 			return true;
 		}
 		return false;
 	}
 
-	public void removeClient(String clientName) {
+	public void unregisterWriter(String clientName) {
 		clientWriters.remove(clientName);
 		System.out.println("Client#" + clientName + " has left");
 	}
 
-	public boolean hasClient(Client c) {
-		return clientWriters.containsKey(c.getName());
-	}
-
-	public ClientWriter findClient(String name) {
-		return clientWriters.get(name);
+	public boolean hasClient(String clientName) {
+		return clientWriters.containsKey(clientName);
 	}
 }

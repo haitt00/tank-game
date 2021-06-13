@@ -8,8 +8,8 @@ public class ClientWriter {
 	public ClientWriter(Socket socket) throws IOException {
 		this.writer = new DataOutputStream(socket.getOutputStream());
 	}
-	
-	public void close() throws IOException{
+
+	public void close() throws IOException {
 		writer.close();
 	}
 
