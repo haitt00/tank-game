@@ -24,12 +24,12 @@ public class Commander {
 		return Opcode.ERROR + " " + errorMessage;
 	}
 	
-	public void requestRegisterClientListener(ClientListener cl) {
-		gameServer.getClientManager().registerClientListener(cl);
+	public void requestRegisterClientWriter(ClientWriter cw) {
+		gameServer.getClientManager().registerWriter(cw);
 	}
 	
-	public ClientListener requestFindClientListener(String clientName) {
-		return gameServer.getClientManager().getClientListener(clientName);
+	public ClientWriter requestFindClientWriter(String clientName) {
+		return gameServer.getClientManager().getClientWriter(clientName);
 	}
 
 	public boolean requestAddClient(Client c) {
@@ -37,11 +37,20 @@ public class Commander {
 		return gameServer.getClientManager().addClient(c);
 	}
 
-	public void requestRemoveClient(String clientName) {
-		gameServer.getClientManager().removeClient(clientName);
-		gameServer.getClientManager().unregisterClientListener(clientName);
+	public void requestDisconnectClient() {
+		gameServer.getClientManager().removeClient(client.getName());
+		gameServer.getClientManager().unregisterWriter(client.getName());
 		client.setRoomId(null);
 		client.setTeamId(null);
+	}
+	
+	public String requestCreateRoom() {
+		Room room = gameServer.getRoomManager().generateRoom();
+		if (room == null) 
+			return toErrorSyntax("Server overload");
+		
+		System.out.println("Client#" + client.getName() + " creates new room#" + room.getId());
+		return toSyntax(Opcode.ROOM_CREATED, room.getId());
 	}
 
 	public void requestRemoveRoom(String roomId) {
@@ -50,12 +59,6 @@ public class Commander {
 
 	public Room requestFindRoom(String roomId) {
 		return gameServer.getRoomManager().findRoom(roomId);
-	}
-
-	public String requestCreateRoom() {
-		Room room = gameServer.getRoomManager().generateRoom();
-		System.out.println("Client#" + client.getName() + " creates new room#" + room.getId());
-		return toSyntax(Opcode.ROOM_CREATED, room.getId());
 	}
 
 	public String requestJoinRoom(String roomId) throws IOException {
@@ -84,8 +87,8 @@ public class Commander {
 		}
 		currentMembers += client.getName();
 
-		ClientListener newListener = requestFindClientListener(client.getName());
-		room.addClientListener(newListener);
+		ClientWriter newWriter = requestFindClientWriter(client.getName());
+		room.addClientWriter(newWriter);
 
 		System.out.println("Client#" + client.getName() + " joins room#" + roomId);
 		return toSyntax(Opcode.ROOM_ACCEPTED, roomId + " " + currentMembers);
@@ -98,15 +101,15 @@ public class Commander {
 		}
 
 		room.removeClient(client.getName());
-		client.setRoomId(null);
-		client.setTeamId(null);
-
 		room.broadcast(Opcode.LEAVE_MEMBER, client.getName());
-		System.out.println("Client#" + client.getName() + " left room#" + client.getRoomId());
 		synchronized (this) {
 			if (room.isEmpty())
 				requestRemoveRoom(client.getRoomId());
 		}
+		
+		System.out.println("Client#" + client.getName() + " left room#" + client.getRoomId());
+		client.setRoomId(null);
+		client.setTeamId(null);
 		return null;
 	}
 

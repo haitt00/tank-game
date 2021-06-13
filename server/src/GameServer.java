@@ -5,8 +5,6 @@ import java.net.Socket;
 public class GameServer extends Thread {
 	private int serverPort;
 	private String serverName = "Dummy";
-	private int maxRooms = 100;
-	private int maxPlayers = 100 * Room.CLIENTS_PER_ROOM;
 	private ClientManager clientManager;
 	private RoomManager roomManager;
 	private ServerSocket listener;
@@ -21,12 +19,6 @@ public class GameServer extends Thread {
 		this(port);
 		this.serverName = serverName;
 	}
-	
-	public GameServer(int port, int maxRooms) {
-		this(port);
-		this.maxRooms = maxRooms;
-		this.maxPlayers = maxRooms * Room.CLIENTS_PER_ROOM;
-	}
 
 	public int getServerPort() {
 		return serverPort;
@@ -34,14 +26,6 @@ public class GameServer extends Thread {
 
 	public String getServerName() {
 		return serverName;
-	}
-
-	public int getMaxRooms() {
-		return maxRooms;
-	}
-
-	public int getMaxPlayers() {
-		return maxPlayers;
 	}
 
 	public ClientManager getClientManager() {
@@ -64,7 +48,7 @@ public class GameServer extends Thread {
 		while (true) {
 			try {
 				Socket clientSocket = listener.accept();
-				clientManager.executeClientListener(new ClientListener(clientSocket, this));
+				clientManager.executeListener(new ClientListener(clientSocket, this));
 			} catch (IOException e) {
 				System.out.println(e.getMessage());
 			}

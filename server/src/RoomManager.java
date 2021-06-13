@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class RoomManager {
+	private int maxRooms = 3;
 	private Map<String, Room> rooms = new HashMap<String, Room>();
 	private ExecutorService roomExecutor = Executors.newCachedThreadPool();
 	private int incRoomId = 0;
@@ -14,10 +15,13 @@ public class RoomManager {
 	}
 
 	public synchronized Room generateRoom() {
-		Room r = new Room(String.valueOf(incRoomId++));
-		addRoom(r);
-		executeRoom(r);
-		return r;
+		if (rooms.size() < maxRooms) {
+			Room r = new Room(String.valueOf(incRoomId++));
+			addRoom(r);
+			executeRoom(r);
+			return r;
+		}
+		return null;
 	}
 
 	public void addRoom(Room r) {
