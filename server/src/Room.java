@@ -8,7 +8,8 @@ import java.util.Set;
 
 public class Room implements Runnable {
 	private String id;
-	private Map<String, ClientListener> clientListeners = new HashMap<String, ClientListener>();
+	private Map<String, Client> clients = new HashMap<String, Client>();
+	private Map<String, ClientWriter> clientWriters = new HashMap<String, ClientWriter>();
 	private boolean running = false;
 
 	public static final int CLIENTS_PER_ROOM = 4;
@@ -23,7 +24,7 @@ public class Room implements Runnable {
 	}
 
 	public Set<String> getClientNames() {
-		return clientListeners.keySet();
+		return clientWriters.keySet();
 	}
 
 	public boolean isRunning() {
@@ -31,39 +32,44 @@ public class Room implements Runnable {
 	}
 
 	public Client findClient(String clientName) {
-		return clientListeners.get(clientName).getClient();
+		return clients.get(clientName);
 	}
 
-	public synchronized void addClientListener(ClientListener c) {
-		clientListeners.put(c.getClient().getName(), c);
+	public synchronized void addClient(Client c) {
+		clients.put(c.getName(), c);
+	}
+
+	public synchronized void addClientWriter(String clientName, ClientWriter cw) {
+		clientWriters.put(clientName, cw);
 	}
 
 	public void removeClient(String clientName) {
-		clientListeners.remove(clientName);
+		clients.remove(clientName);
+		clientWriters.remove(clientName);
 	}
 
 	public boolean hasClient(Client c) {
-		return clientListeners.containsKey(c.getName());
+		return clients.containsKey(c.getName());
 	}
 
 	public boolean isFull() {
-		return clientListeners.size() == CLIENTS_PER_ROOM;
+		return clients.size() == CLIENTS_PER_ROOM;
 	}
 
 	public boolean isEmpty() {
-		return clientListeners.size() == 0;
+		return clients.size() == 0;
 	}
 
 	public void startGame() throws IOException {
 		String teamId = null;
-		List<String> keys = new ArrayList<String>(clientListeners.keySet());
+		List<String> keys = new ArrayList<String>(clientWriters.keySet());
 		Collections.shuffle(keys);
 
 		for (int i = 0; i < keys.size(); i++) {
-			ClientListener c = clientListeners.get(keys.get(i));
+			ClientWriter cw = clientWriters.get(keys.get(i));
 			teamId = String.valueOf(i % TEAMS_PER_ROOM + 1);
-			c.getClient().setTeamId(teamId);
-			c.sendPacket(Opcode.START_GAME, teamId);
+			clients.get(keys.get(i)).setTeamId(teamId);
+			cw.sendPacket(Opcode.START_GAME, teamId);
 		}
 		running = true;
 		System.out.println("Room#" + id + " starts game");
@@ -74,14 +80,14 @@ public class Room implements Runnable {
 	}
 
 	public void broadcast(String message) throws IOException {
-		for (String key : clientListeners.keySet()) {
-			clientListeners.get(key).sendPacket(message);
+		for (String key : clientWriters.keySet()) {
+			clientWriters.get(key).sendPacket(message);
 		}
 	}
 
 	public void broadcast(Opcode opcode, String message) throws IOException {
-		for (String key : clientListeners.keySet()) {
-			clientListeners.get(key).sendPacket(opcode, message);
+		for (String key : clientWriters.keySet()) {
+			clientWriters.get(key).sendPacket(opcode, message);
 		}
 	}
 

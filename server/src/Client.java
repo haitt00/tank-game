@@ -18,7 +18,7 @@ public class Client {
 	public String getRoomId() {
 		return roomId;
 	}
-	
+
 	public void setRoomId(String roomId) {
 		this.roomId = roomId;
 	}

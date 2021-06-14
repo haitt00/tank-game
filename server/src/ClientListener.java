@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -7,7 +6,7 @@ import java.net.Socket;
 public class ClientListener extends Thread {
 	private Socket socket;
 	private BufferedReader reader;
-	private DataOutputStream writer;
+	private ClientWriter writer;
 	private boolean running = false;
 	private Commander commander;
 
@@ -24,25 +23,8 @@ public class ClientListener extends Thread {
 		return commander.getClient();
 	}
 
-	public void sendPacket(String message) throws IOException {
-		if (message == null)
-			return;
-
-		writer.writeBytes(message + "\n");
-	}
-
-	public void sendPacket(Opcode opcode) throws IOException {
-		if (opcode == null)
-			return;
-
-		writer.writeBytes(opcode + "\n");
-	}
-
-	public void sendPacket(Opcode opcode, String message) throws IOException {
-		if (opcode == null)
-			return;
-
-		writer.writeBytes(opcode + " " + message + "\n");
+	public ClientWriter getWriter() {
+		return writer;
 	}
 
 	public void closeConnection() {
@@ -51,8 +33,7 @@ public class ClientListener extends Thread {
 			writer.close();
 			socket.close();
 
-			String clientName = commander.getClient().getName();
-			commander.requestRemoveClient(clientName);
+			commander.requestDisconnectClient();
 
 			String roomId = commander.getClient().getRoomId();
 			if (roomId == null)
@@ -78,10 +59,10 @@ public class ClientListener extends Thread {
 			System.out.println(
 					"New client connection from: " + socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			writer = new DataOutputStream(socket.getOutputStream());
+			writer = new ClientWriter(socket);
 
 			while (true) {
-				sendPacket(Opcode.NEW_CLIENT);
+				writer.sendPacket(Opcode.NEW_CLIENT);
 				String name = reader.readLine();
 				System.out.println("Client name: " + name);
 
@@ -91,11 +72,10 @@ public class ClientListener extends Thread {
 				if (name.isBlank())
 					continue;
 
-				running = commander.requestAddClient(new Client(name));
+				running = commander.requestRegisterClientWriter(new Client(name), writer);
 
 				if (running) {
-					commander.requestRegisterClientListener(this);
-					sendPacket(Opcode.CLIENT_ACCEPTED, name);
+					writer.sendPacket(Opcode.CLIENT_ACCEPTED, name);
 					break;
 				}
 			}
@@ -103,12 +83,16 @@ public class ClientListener extends Thread {
 			while (running) {
 				String input = reader.readLine();
 				String result = commander.parseCommand(input);
+
+				if (result == null)
+					continue;
+
 				if (result.equals(Opcode.EXIT_GAME.name())) {
 					running = false;
 					break;
 				}
-			
-				sendPacket(result);
+
+				writer.sendPacket(result);
 			}
 
 		} catch (Exception e) {

@@ -4,50 +4,36 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ClientManager {
-	private Map<String, Client> clients;
-	private Map<String, ClientListener> clientListeners;
+	private Map<String, ClientWriter> clientWriters;
 	private ExecutorService clientExecutor;
 
 	public ClientManager() {
-		this.clients = new HashMap<String, Client>();
-		this.clientListeners = new HashMap<String, ClientListener>();
+		this.clientWriters = new HashMap<String, ClientWriter>();
 		this.clientExecutor = Executors.newCachedThreadPool();
 	}
 
-	public void executeClientListener(ClientListener cl) {
+	public void executeListener(ClientListener cl) {
 		clientExecutor.execute(cl);
 	}
-	
-	public void registerClientListener(ClientListener cl) {
-		clientListeners.put(cl.getClient().getName(), cl);
-	}
-	
-	public void unregisterClientListener(String clientName) {
-		clientListeners.remove(clientName);
+
+	public ClientWriter getClientWriter(String clientName) {
+		return clientWriters.get(clientName);
 	}
 
-	public synchronized boolean addClient(Client c) {
-		if (!hasClient(c)) {
-			clients.put(c.getName(), c);
+	public synchronized boolean registerWriter(String clientName, ClientWriter cw) {
+		if (!hasClient(clientName)) {
+			clientWriters.put(clientName, cw);
 			return true;
 		}
 		return false;
 	}
 
-	public void removeClient(String clientName) {
-		clients.remove(clientName);
+	public void unregisterWriter(String clientName) {
+		clientWriters.remove(clientName);
 		System.out.println("Client#" + clientName + " has left");
 	}
 
-	public boolean hasClient(Client c) {
-		return clients.containsKey(c.getName());
-	}
-
-	public Client findClient(String name) {
-		return clients.get(name);
-	}
-	
-	public ClientListener getClientListener(String clientName) {
-		return clientListeners.get(clientName);
+	public boolean hasClient(String clientName) {
+		return clientWriters.containsKey(clientName);
 	}
 }
