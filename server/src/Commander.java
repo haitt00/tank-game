@@ -136,7 +136,7 @@ public class Commander {
 		if (Opcode.MOVE.name().equals(opcode) || Opcode.SHOOT.name().equals(opcode)
 				|| Opcode.SET_TRAP.name().equals(opcode)) {
 			Room room = gameServer.getRoomManager().findRoom(client.getRoomId());
-			room.broadcast(command);
+			room.broadcastExcept(client.getName(), command + " " + client.getName());
 			return null;
 		}
 

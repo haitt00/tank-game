@@ -94,6 +94,14 @@ public class Room implements Runnable {
 			clientWriters.get(key).sendPacket(opcode, message);
 		}
 	}
+	
+	public void broadcastExcept(String clientName, String message) throws IOException{
+		for (String key: clientWriters.keySet()) {
+			if (key.equals(clientName)) 
+				continue;
+			clientWriters.get(key).sendPacket(message);
+		}
+	}
 
 	@Override
 	public boolean equals(Object o) {
