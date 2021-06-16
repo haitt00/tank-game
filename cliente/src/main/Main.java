@@ -9,6 +9,7 @@ import logic.Constants;
 import logic.Game;
 import network.Client;
 import ui.GameScene;
+import ui.LogOnScene;
 
 public class Main extends Application{
 	public static Scene currentScene;
@@ -38,7 +39,7 @@ public class Main extends Application{
 //		Main.primaryStage = primaryStage;
 //		
 //		
-//		primaryStage.setScene(new Scene(new BorderPane()));
+//		primaryStage.setScene(new LogOnScene());
 //		primaryStage.setTitle(Constants.GAME_TITLE);
 //		primaryStage.show();
 		Game game = new Game();
