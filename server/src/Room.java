@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 public class Room implements Runnable {
@@ -14,6 +15,7 @@ public class Room implements Runnable {
 
 	public static final int CLIENTS_PER_ROOM = 4;
 	public static final int TEAMS_PER_ROOM = 2;
+	public static final int NUMBER_OF_MAPS = 5;
 
 	public Room(String id) {
 		this.id = id;
@@ -64,12 +66,14 @@ public class Room implements Runnable {
 		String teamId = null;
 		List<String> keys = new ArrayList<String>(clientWriters.keySet());
 		Collections.shuffle(keys);
+		
+		int randomMap = new Random().nextInt(NUMBER_OF_MAPS);
 
 		for (int i = 0; i < keys.size(); i++) {
 			ClientWriter cw = clientWriters.get(keys.get(i));
 			teamId = String.valueOf(i % TEAMS_PER_ROOM + 1);
 			clients.get(keys.get(i)).setTeamId(teamId);
-			cw.sendPacket(Opcode.START_GAME, teamId);
+			cw.sendPacket(Opcode.START_GAME, teamId + " " + String.valueOf(randomMap));
 		}
 		running = true;
 		System.out.println("Room#" + id + " starts game");
