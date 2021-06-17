@@ -40,16 +40,17 @@ public class Game {
 		for(String name: names){
 			switch(count) {
 			case 0:
-				t = new Tank(padding, padding, this, name);
+				t = new Tank(padding, padding, this, name, "1");
 				break;
 			case 1:
-				t = new Tank(Constants.GAME_SIZE - padding, padding, this, name);
+				t = new Tank(Constants.GAME_SIZE - padding, padding, this, name, "1");
 				break;
 			case 2:
-				t = new Tank(Constants.GAME_SIZE - padding, Constants.GAME_SIZE - padding, this, name);
+				t = new Tank(Constants.GAME_SIZE - padding, Constants.GAME_SIZE - padding, this, name, "2");
 				break;
 			case 3:
-				t = new Tank(padding, Constants.GAME_SIZE - padding, this, name);
+//				return;
+				t = new Tank(padding, Constants.GAME_SIZE - padding, this, name, "2");
 				break;
 			}
 			
@@ -132,7 +133,7 @@ public class Game {
 			for (int i = boundSweepStart; i <= boundSweepEnd; i++) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
 					GameObject tankCollided = this.checkGridHasTank(j, i);
-					if(wallMatrix[j][i] == 1 || (this.checkGridHasTank(j, i)!=null)) {
+					if(wallMatrix[j][i] == 1 || (tankCollided!=null)) {
 						double newPos = getPosEdge(j, i, Direction.getOpposite(direction)) - object.size / 2;
 						return new CollisionDetail(newPos, tankCollided);
 					}
@@ -146,8 +147,8 @@ public class Game {
 			boundSweepEnd = getGridIndex(newX + object.size / 2, false);
 			for (int i = boundSweepStart; i <= boundSweepEnd; i++) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
-					GameObject tankCollided = this.checkGridHasTank(j, i);
-					if(wallMatrix[i][j] == 1 || (this.checkGridHasTank(i, j)!=null)) {
+					GameObject tankCollided = this.checkGridHasTank(i, j);
+					if(wallMatrix[i][j] == 1 || (tankCollided!=null)) {
 						double newPos = getPosEdge(i, j, Direction.getOpposite(direction)) - object.size / 2;
 						return new CollisionDetail(newPos, tankCollided);
 					}
@@ -161,8 +162,8 @@ public class Game {
 			boundSweepEnd = getGridIndex(newX - object.size / 2, true);
 			for (int i = boundSweepStart; i >= boundSweepEnd; i--) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
-					GameObject tankCollided = this.checkGridHasTank(j, i);
-					if(wallMatrix[i][j] == 1 || (this.checkGridHasTank(i, j)!=null)) {
+					GameObject tankCollided = this.checkGridHasTank(i, j);
+					if(wallMatrix[i][j] == 1 || (tankCollided!=null)) {
 						double newPos = getPosEdge(i, j, Direction.getOpposite(direction)) + object.size / 2;
 						return new CollisionDetail(newPos, tankCollided);
 					}

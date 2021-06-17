@@ -5,15 +5,18 @@ import javafx.scene.image.ImageView;
 
 public class Missile extends GameObject{
 	Direction direction;
+	String teamId;
 	double imgDimension = Configs.WALL_SIZE/2;
-	public Missile(double x, double y, Game game, Direction d) {
+	public Missile(double x, double y, Game game, Direction d, String teamId) {
 		super(x, y, game);
 		this.direction = d;
 		size = Configs.WALL_SIZE/2;
+		this.teamId = teamId;
 		
 		img = new ImageView(new Image("/img/missile.png", imgDimension, imgDimension, true, true));
 		img.setRotate(d.getAngle());
 		this.addOffSet();
+		
 		this.startUpdate();
 		
 	}
@@ -62,13 +65,26 @@ public class Missile extends GameObject{
 			newX = newX - Configs.MISSILE_SPEED;
 			intendedPos = newX;		
 		}
-		if(game.checkCollision(this, newX, newY, this.direction).getNewPos()==intendedPos) {
+		CollisionDetail cd = game.checkCollision(this, newX, newY, this.direction);
+		if(cd.getNewPos()==intendedPos) {
 //			System.out.println("no coll");
 			x = newX; y = newY;
 			relocate(x, y);
 			return true;
 		}
 		else {
+			GameObject target = cd.getCoolisionTarget();
+			if(target instanceof Tank) {
+				
+				if((((Tank)target).teamId).equals(this.teamId)) {
+					x = newX; y = newY;
+					relocate(x, y);
+					return true;
+				}
+				else {
+					((Tank) target).takeDam();
+				}
+			}
 //			System.out.println("coll");
 			return false;
 		}

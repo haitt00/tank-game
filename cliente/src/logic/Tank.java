@@ -5,11 +5,16 @@ import javafx.scene.image.ImageView;
 
 public class Tank extends GameObject{
 	String name;
-	public Tank(double x, double y, Game game, String name) {
+	String teamId;
+	int lives;
+	public Tank(double x, double y, Game game, String name, String teamId) {
 		super(x, y, game);
 		img = new ImageView(new Image("/img/tank1.png", Configs.TANK_SIZE, Configs.TANK_SIZE, true, true));
 		size = Configs.TANK_SIZE;
 		this.name = name;
+		this.teamId = teamId;
+		this.lives = Configs.MAX_LIVES;
+		System.out.println(x+" "+y+" "+teamId+" "+name);
 	}
 	public void turn(Direction d) {
 		img.setRotate(d.getAngle());
@@ -45,7 +50,13 @@ public class Tank extends GameObject{
 		game.addGameObject(t);
 	}
 	public void fire() {
-		Missile m = new Missile(this.x, this.y, this.game, Direction.getDirectionFromAngle(this.img.getRotate()));
+		Missile m = new Missile(this.x, this.y, this.game, Direction.getDirectionFromAngle(this.img.getRotate()), this.teamId);
 		game.addGameObject(m);
+	}
+	public void takeDam() {
+		this.lives --;
+		if(lives == 0) {
+			game.removeGameObject(this);
+		}
 	}
 }
