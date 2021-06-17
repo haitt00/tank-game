@@ -9,6 +9,7 @@ import ui.GameScene;
 public class Game {
 	GameScene gameScene;
 	HashMap<String, Tank> tanks = new HashMap<String, Tank>();
+	ArrayList<Trap> traps = new ArrayList<Trap>();
 	int[][] wallMatrix;
 	boolean over;
 
@@ -61,14 +62,23 @@ public class Game {
 			
 	}
 	public void addGameObject(GameObject gameObject) {
+		if(gameObject instanceof Trap) {
+			this.traps.add((Trap) gameObject);
+		}
 		double topLeftXCoordinate = gameObject.getX() - gameObject.getSize() / 2;
 		double topLeftYCoordinate = gameObject.getY() - gameObject.getSize() / 2;
-//		System.out.println("set at: " + topLeftXCoordinate + " " + topLeftYCoordinate);
 
 		gameScene.addImageView(gameObject.getImg(), topLeftXCoordinate, topLeftYCoordinate);
 	}
 	
 	public void removeGameObject(GameObject gameObject) {
+		if(gameObject instanceof Trap) {
+			this.traps.remove((Trap) gameObject);
+		}
+		if(gameObject instanceof Tank) {
+			this.tanks.remove(((Tank) gameObject).name);
+		}
+		
 		gameScene.removeImageView(gameObject.getImg());
 	}
 
@@ -222,5 +232,26 @@ public class Game {
 			}
 		}
 		return (int) Math.floor(position / Configs.WALL_SIZE);
+	}
+
+	public Trap checkHitTrap(Tank tank) {
+		for(Trap trap: this.traps) {
+			if(isOverlapping(trap, tank)) {
+				return trap;
+			}
+		}
+		return null;
+	}
+	private boolean isOverlapping(GameObject obj1, GameObject obj2) {
+		
+		if (obj1.getRight() < obj2.getLeft() 
+	      || obj1.getLeft() > obj2.getRight()) {
+	        return false;
+	    }
+	    if (obj1.getUp() < obj2.getDown() 
+	      || obj1.getDown() > obj2.getUp()) {
+	        return false;
+	    }
+	    return true;
 	}
 }

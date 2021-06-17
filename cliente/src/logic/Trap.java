@@ -10,6 +10,9 @@ public class Trap extends GameObject{
 		img = new ImageView(new Image("/img/trap.png", Configs.TRAP_SIZE, Configs.TRAP_SIZE, true, true));
 		size = Configs.TRAP_SIZE;
 	}
+	public void hide() {
+		this.img.setVisible(false);
+	}
 	
 
 }

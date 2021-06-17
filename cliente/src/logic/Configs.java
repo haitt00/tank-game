@@ -16,6 +16,7 @@ public class Configs {
 	public static final double TANK_SPEED = WALL_SIZE / 1;		//24
 	public static final double MISSILE_SPEED = WALL_SIZE / 10;	//2.4
 	public static final int MAX_LIVES = 3;
+	public static final int MAX_TRAPS = 2;
 	public static final JSONArray matrices;
 	
 	static {

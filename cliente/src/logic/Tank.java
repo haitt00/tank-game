@@ -28,6 +28,14 @@ public class Tank extends GameObject{
 			turn(d);
 			translate(d);
 		}
+		updateStateHitTrap();
+	}
+	private void updateStateHitTrap() {
+		Trap trap = game.checkHitTrap(this);
+		if(trap!=null) {
+			game.removeGameObject(trap);
+			this.takeDam();
+		}
 	}
 	public void translate(Direction d) {
 		if(d == Direction.UP) {
@@ -47,6 +55,9 @@ public class Tank extends GameObject{
 	}
 	public void setTrap() {
 		Trap t = new Trap(this.x, this.y, this.game);
+		if(!this.teamId.equals(game.getSelfTank().teamId)) {
+			t.hide();
+		}
 		game.addGameObject(t);
 	}
 	public void fire() {

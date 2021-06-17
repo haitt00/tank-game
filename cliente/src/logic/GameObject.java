@@ -37,5 +37,17 @@ public class GameObject {
 			}
 		});
 	}
+	public double getUp() {
+		return this.y - this.size / 2;
+	}
+	public double getDown() {
+		return this.y + this.size / 2;
+	}
+	public double getRight() {
+		return this.x + this.size / 2;
+	}
+	public double getLeft() {
+		return this.x - this.size / 2;
+	}
 	
 }
