@@ -16,8 +16,8 @@ public class Game {
 		gameScene.setGame(this);
 
 		generateWalls();
-
-		selfTank = new Tank(Configs.TANK_SIZE / 2, Configs.TANK_SIZE / 2);
+		double padding = Configs.TANK_SIZE / 2 + Configs.WALL_SIZE;
+		selfTank = new Tank(padding, padding);
 		addGameObject(selfTank);
 
 	}
@@ -29,7 +29,7 @@ public class Game {
 	public void addGameObject(GameObject gameObject) {
 		double topLeftXCoordinate = gameObject.getX() - gameObject.getSize() / 2;
 		double topLeftYCoordinate = gameObject.getY() - gameObject.getSize() / 2;
-		System.out.println("set at: " + topLeftXCoordinate + " " + topLeftYCoordinate);
+//		System.out.println("set at: " + topLeftXCoordinate + " " + topLeftYCoordinate);
 
 		gameScene.addImageView(gameObject.getImg(), topLeftXCoordinate, topLeftYCoordinate);
 	}
@@ -63,6 +63,8 @@ public class Game {
 	}
 
 	private int[][] getFakeWallMatrix() {
-		return Map.getRandomMap();
+		return Configs.getFakeMap(4);
+//		return Map.getRandomMap();
+		
 	}
 }

@@ -20,7 +20,7 @@ public class Client implements Runnable{
 	private DataOutputStream writer;
 	private String name;
 	private String roomId;
-	private ArrayList<String> playerNames = new ArrayList<String>(Arrays.asList("hai", "crazy"));
+	private ArrayList<String> playerNames = new ArrayList<String>(Arrays.asList("user1", "user2"));
 	private static Client client;
 	
 	public static final int SERVER_PORT = 5588;
