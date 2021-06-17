@@ -18,9 +18,9 @@ public class Client implements Runnable{
 	private Socket socket;
 	private BufferedReader reader;
 	private DataOutputStream writer;
-	private String name;
+	private String name = "user3";
 	private String roomId;
-	private ArrayList<String> playerNames = new ArrayList<String>(Arrays.asList("user1", "user2"));
+	private ArrayList<String> playerNames = new ArrayList<String>(Arrays.asList("user1", "user2", "user3", "user4"));
 	private static Client client;
 	
 	public static final int SERVER_PORT = 5588;

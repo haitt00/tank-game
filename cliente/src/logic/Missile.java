@@ -62,7 +62,7 @@ public class Missile extends GameObject{
 			newX = newX - Configs.MISSILE_SPEED;
 			intendedPos = newX;		
 		}
-		if(game.checkCollision(this, newX, newY, this.direction)==intendedPos) {
+		if(game.checkCollision(this, newX, newY, this.direction).getNewPos()==intendedPos) {
 //			System.out.println("no coll");
 			x = newX; y = newY;
 			relocate(x, y);

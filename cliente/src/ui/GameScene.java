@@ -13,6 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import logic.Constants;
 import logic.Game;
+import network.Client;
 
 public class GameScene extends GeneralScene{
 	Game game;
@@ -24,7 +25,8 @@ public class GameScene extends GeneralScene{
 
 			@Override
 			public void handle(KeyEvent event) {
-				game.handleInput(event.getCode());
+				String selfName = Client.getInstance().getName();
+				game.handleInput(selfName, event.getCode());
 				
 			}
 		};

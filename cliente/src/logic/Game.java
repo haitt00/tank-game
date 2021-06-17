@@ -1,11 +1,14 @@
 package logic;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import javafx.scene.input.KeyCode;
+import network.Client;
 import ui.GameScene;
 
 public class Game {
 	GameScene gameScene;
-	Tank selfTank;
+	HashMap<String, Tank> tanks = new HashMap<String, Tank>();
 	int[][] wallMatrix;
 	boolean over;
 
@@ -17,15 +20,45 @@ public class Game {
 		gameScene.setGame(this);
 
 		generateWalls();
-		double padding = Configs.TANK_SIZE / 2 + Configs.WALL_SIZE;
-		selfTank = new Tank(padding, padding, this);
-		addGameObject(selfTank);	
+		generateTanks();
+		
 	}
 
 	public GameScene getGameScene() {
 		return gameScene;
 	}
 
+	public Tank getSelfTank() {
+		return this.tanks.get(Client.getInstance().getName());
+	}
+	public void generateTanks() {
+		
+		double padding = Configs.TANK_SIZE / 2 + Configs.WALL_SIZE;
+		ArrayList<String> names = Client.getInstance().getPlayerNames();
+		int count = 0;
+		Tank t = null;
+		for(String name: names){
+			switch(count) {
+			case 0:
+				t = new Tank(padding, padding, this, name);
+				break;
+			case 1:
+				t = new Tank(Constants.GAME_SIZE - padding, padding, this, name);
+				break;
+			case 2:
+				t = new Tank(Constants.GAME_SIZE - padding, Constants.GAME_SIZE - padding, this, name);
+				break;
+			case 3:
+				t = new Tank(padding, Constants.GAME_SIZE - padding, this, name);
+				break;
+			}
+			
+			this.tanks.put(name, t);
+			this.addGameObject(t);
+			count++;
+		}
+			
+	}
 	public void addGameObject(GameObject gameObject) {
 		double topLeftXCoordinate = gameObject.getX() - gameObject.getSize() / 2;
 		double topLeftYCoordinate = gameObject.getY() - gameObject.getSize() / 2;
@@ -38,19 +71,20 @@ public class Game {
 		gameScene.removeImageView(gameObject.getImg());
 	}
 
-	public void handleInput(KeyCode keyCode) {
+	public void handleInput(String name, KeyCode keyCode) {
+		Tank tank = this.tanks.get(name);
 		if (keyCode == Constants.KEY_UP) {
-			selfTank.move(Direction.UP);
+			tank.move(Direction.UP);
 		} else if (keyCode == Constants.KEY_DOWN) {
-			selfTank.move(Direction.DOWN);
+			tank.move(Direction.DOWN);
 		} else if (keyCode == Constants.KEY_RIGHT) {
-			selfTank.move(Direction.RIGHT);
+			tank.move(Direction.RIGHT);
 		} else if (keyCode == Constants.KEY_LEFT) {
-			selfTank.move(Direction.LEFT);
+			tank.move(Direction.LEFT);
 		} else if (keyCode == Constants.KEY_FIRE) {
-			selfTank.fire();
+			tank.fire();
 		} else if (keyCode == Constants.KEY_TRAP) {
-			selfTank.setTrap();
+			tank.setTrap();
 		}
 	}
 
@@ -71,7 +105,7 @@ public class Game {
 		
 	}
 	
-	public double checkCollision(GameObject object, double newX, double newY, Direction direction){
+	public CollisionDetail checkCollision(GameObject object, double newX, double newY, Direction direction){
 //		System.out.println("before check: "+newX+" "+newY);
 		int boundCellStart, boundCellEnd;
 		int boundSweepStart, boundSweepEnd;
@@ -82,8 +116,10 @@ public class Game {
 			boundSweepEnd = getGridIndex(newY - object.size / 2, true);
 			for (int i = boundSweepStart; i >= boundSweepEnd; i--) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
-					if(wallMatrix[j][i] == 1) {
-						return getPosEdge(j, i, Direction.getOpposite(direction)) + object.size / 2;
+					GameObject tankCollided = this.checkGridHasTank(j, i);
+					if(wallMatrix[j][i] == 1 || (tankCollided!=null)) {
+						double newPos = getPosEdge(j, i, Direction.getOpposite(direction)) + object.size / 2;
+						return new CollisionDetail(newPos, tankCollided);
 					}
 				}	
 			}
@@ -95,10 +131,10 @@ public class Game {
 			boundSweepEnd = getGridIndex(newY + object.size / 2, false);
 			for (int i = boundSweepStart; i <= boundSweepEnd; i++) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
-					if(wallMatrix[j][i] == 1) {
-//						System.out.println("obstable at: "+j+" "+i);
-						
-						return getPosEdge(j, i, Direction.getOpposite(direction)) - object.size / 2;
+					GameObject tankCollided = this.checkGridHasTank(j, i);
+					if(wallMatrix[j][i] == 1 || (this.checkGridHasTank(j, i)!=null)) {
+						double newPos = getPosEdge(j, i, Direction.getOpposite(direction)) - object.size / 2;
+						return new CollisionDetail(newPos, tankCollided);
 					}
 				}	
 			}
@@ -110,9 +146,10 @@ public class Game {
 			boundSweepEnd = getGridIndex(newX + object.size / 2, false);
 			for (int i = boundSweepStart; i <= boundSweepEnd; i++) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
-					if(wallMatrix[i][j] == 1) {
-//						System.out.println("obstable at: "+i+" "+j);
-						return getPosEdge(i, j, Direction.getOpposite(direction)) - object.size / 2;
+					GameObject tankCollided = this.checkGridHasTank(j, i);
+					if(wallMatrix[i][j] == 1 || (this.checkGridHasTank(i, j)!=null)) {
+						double newPos = getPosEdge(i, j, Direction.getOpposite(direction)) - object.size / 2;
+						return new CollisionDetail(newPos, tankCollided);
 					}
 				}	
 			}
@@ -124,19 +161,20 @@ public class Game {
 			boundSweepEnd = getGridIndex(newX - object.size / 2, true);
 			for (int i = boundSweepStart; i >= boundSweepEnd; i--) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
-					if(wallMatrix[i][j] == 1) {
-//						System.out.println("obstable at: "+i+" "+j);
-						return getPosEdge(i, j, Direction.getOpposite(direction)) + object.size / 2;
+					GameObject tankCollided = this.checkGridHasTank(j, i);
+					if(wallMatrix[i][j] == 1 || (this.checkGridHasTank(i, j)!=null)) {
+						double newPos = getPosEdge(i, j, Direction.getOpposite(direction)) + object.size / 2;
+						return new CollisionDetail(newPos, tankCollided);
 					}
 				}	
 			}
 		}
 		
 		if(direction==Direction.UP||direction==Direction.DOWN) {
-			return newY;
+			return new CollisionDetail(newY, null);
 		}
 		else {
-			return newX;
+			return new CollisionDetail(newX, null);
 		}
 		
 	}
@@ -146,6 +184,16 @@ public class Game {
 		result[0] = getGridIndex(x, nextX);
 		result[1] = getGridIndex(y, nextY);
 		return result;
+	}
+	private Tank checkGridHasTank(int x, int y) {
+		double xPoint = Configs.WALL_SIZE * (x+0.5);
+		double yPoint = Configs.WALL_SIZE * (y+0.5);
+		for(Tank tank: this.tanks.values()) {
+			if((Math.abs(xPoint - tank.x) <= tank.size/2)&&(Math.abs(yPoint - tank.y) <= tank.size/2)) {
+				return tank;
+			}
+		}
+		return null;
 	}
 	private double getPosEdge(int x, int y, Direction direction) {
 //		System.out.println("x: "+x);
