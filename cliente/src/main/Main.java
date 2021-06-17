@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import logic.Constants;
 import logic.Game;
+import network.Client;
+import ui.LogOnScene;
 
 public class Main extends Application{
 	public static Scene currentScene;

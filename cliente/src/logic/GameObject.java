@@ -6,9 +6,11 @@ public class GameObject {
 	double x, y;
 	ImageView img;
 	double size;
-	public GameObject(double x, double y) {
+	Game game;
+	public GameObject(double x, double y, Game game) {
 		this.x = x;
 		this.y = y;
+		this.game = game;
 	}
 	public ImageView getImg() {
 		return img;
