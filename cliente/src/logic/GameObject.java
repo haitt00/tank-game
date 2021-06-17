@@ -1,5 +1,6 @@
 package logic;
 
+import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 
 public class GameObject {
@@ -23,6 +24,18 @@ public class GameObject {
 	}
 	public double getSize() {
 		return size;
+	}
+	protected void relocate(double x, double y) {
+		double topLeftXCoordinate = x - size/2;
+		double topLeftYCoordinate = y - size/2;
+//			System.out.println("relocate: "+topLeftXCoordinate+" "+topLeftYCoordinate);
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				img.relocate(topLeftXCoordinate, topLeftYCoordinate);
+			}
+		});
 	}
 	
 }

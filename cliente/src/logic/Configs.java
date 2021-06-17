@@ -7,10 +7,14 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 public class Configs {
-	public static final double TANK_SIZE = Constants.GAME_SIZE/Configs.GRID_EDGE * 2;
-	public static final double WALL_SIZE = Constants.GAME_SIZE/Configs.GRID_EDGE;
+	
 	public static final int GRID_EDGE = 30;
-	public static final double TANK_SPEED = WALL_SIZE;
+	public static final double WALL_SIZE = Constants.GAME_SIZE / Configs.GRID_EDGE; //24
+	public static final double TANK_SIZE = WALL_SIZE * 2; 		//48
+	public static final double TRAP_SIZE = WALL_SIZE;			//24
+	
+	public static final double TANK_SPEED = WALL_SIZE / 1;		//24
+	public static final double MISSILE_SPEED = WALL_SIZE / 10;	//2.4
 	public static final JSONArray matrices;
 	
 	static {

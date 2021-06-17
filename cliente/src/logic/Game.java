@@ -7,6 +7,7 @@ public class Game {
 	GameScene gameScene;
 	Tank selfTank;
 	int[][] wallMatrix;
+	boolean over;
 
 	public Game() {
 
@@ -18,8 +19,7 @@ public class Game {
 		generateWalls();
 		double padding = Configs.TANK_SIZE / 2 + Configs.WALL_SIZE;
 		selfTank = new Tank(padding, padding, this);
-		addGameObject(selfTank);
-
+		addGameObject(selfTank);	
 	}
 
 	public GameScene getGameScene() {
@@ -33,6 +33,10 @@ public class Game {
 
 		gameScene.addImageView(gameObject.getImg(), topLeftXCoordinate, topLeftYCoordinate);
 	}
+	
+	public void removeGameObject(GameObject gameObject) {
+		gameScene.removeImageView(gameObject.getImg());
+	}
 
 	public void handleInput(KeyCode keyCode) {
 		if (keyCode == Constants.KEY_UP) {
@@ -40,12 +44,11 @@ public class Game {
 		} else if (keyCode == Constants.KEY_DOWN) {
 			selfTank.move(Direction.DOWN);
 		} else if (keyCode == Constants.KEY_RIGHT) {
-			System.out.println("right");
 			selfTank.move(Direction.RIGHT);
 		} else if (keyCode == Constants.KEY_LEFT) {
 			selfTank.move(Direction.LEFT);
 		} else if (keyCode == Constants.KEY_FIRE) {
-			// todo: handle fire
+			selfTank.fire();
 		} else if (keyCode == Constants.KEY_TRAP) {
 			selfTank.setTrap();
 		}
@@ -69,7 +72,7 @@ public class Game {
 	}
 	
 	public double checkCollision(GameObject object, double newX, double newY, Direction direction){
-		System.out.println("before check: "+newX+" "+newY);
+//		System.out.println("before check: "+newX+" "+newY);
 		int boundCellStart, boundCellEnd;
 		int boundSweepStart, boundSweepEnd;
 		if(direction == Direction.UP) {
@@ -93,7 +96,7 @@ public class Game {
 			for (int i = boundSweepStart; i <= boundSweepEnd; i++) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
 					if(wallMatrix[j][i] == 1) {
-						System.out.println("obstable at: "+j+" "+i);
+//						System.out.println("obstable at: "+j+" "+i);
 						
 						return getPosEdge(j, i, Direction.getOpposite(direction)) - object.size / 2;
 					}
@@ -108,7 +111,7 @@ public class Game {
 			for (int i = boundSweepStart; i <= boundSweepEnd; i++) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
 					if(wallMatrix[i][j] == 1) {
-						System.out.println("obstable at: "+i+" "+j);
+//						System.out.println("obstable at: "+i+" "+j);
 						return getPosEdge(i, j, Direction.getOpposite(direction)) - object.size / 2;
 					}
 				}	
@@ -122,18 +125,11 @@ public class Game {
 			for (int i = boundSweepStart; i >= boundSweepEnd; i--) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
 					if(wallMatrix[i][j] == 1) {
-						System.out.println("obstable at: "+i+" "+j);
+//						System.out.println("obstable at: "+i+" "+j);
 						return getPosEdge(i, j, Direction.getOpposite(direction)) + object.size / 2;
 					}
 				}	
 			}
-		}
-		
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
-				System.out.print(wallMatrix[i][j]);
-			}
-			System.out.println();
 		}
 		
 		if(direction==Direction.UP||direction==Direction.DOWN) {
@@ -152,9 +148,9 @@ public class Game {
 		return result;
 	}
 	private double getPosEdge(int x, int y, Direction direction) {
-		System.out.println("x: "+x);
-		System.out.println("y: "+y);
-		System.out.println("direction: "+direction.angle);
+//		System.out.println("x: "+x);
+//		System.out.println("y: "+y);
+//		System.out.println("direction: "+direction.angle);
 		if(direction == Direction.UP) {
 			return Configs.WALL_SIZE * y;
 		}

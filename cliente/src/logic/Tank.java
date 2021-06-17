@@ -23,16 +23,8 @@ public class Tank extends GameObject{
 		}
 	}
 	public void translate(Direction d) {
-		System.out.println("pre: "+x+" "+y);
 		if(d == Direction.UP) {
 			y = game.checkCollision(this, x, y - Configs.TANK_SPEED, d);
-			
-//			y = y - Configs.TANK_SPEED;
-//			System.out.println("pre: "+x+" "+y);
-//			if(y < size/2) {
-//				y = size/2;
-//			}
-//			System.out.println("post: "+x+" "+y);
 		}
 		else if (d == Direction.DOWN){
 			y = game.checkCollision(this, x, y + Configs.TANK_SPEED, d);
@@ -43,46 +35,15 @@ public class Tank extends GameObject{
 		else {
 			x = game.checkCollision(this, x - Configs.TANK_SPEED, y, d);
 		}
-//		if(d == Direction.DOWN) {
-//			y = y + Configs.TANK_SPEED;
-//			System.out.println("pre: "+x+" "+y);
-//			if(y > Constants.GAME_SIZE - size/2) {
-//				y = Constants.GAME_SIZE - size/2;
-//			}
-//			System.out.println("post: "+x+" "+y);
-//		}
-//		else if(d == Direction.RIGHT) {
-//			x = x + Configs.TANK_SPEED;
-//			System.out.println("pre: "+x+" "+y);
-//			if(x > Constants.GAME_SIZE - size/2) {
-//				x = Constants.GAME_SIZE - size/2;
-//			}
-//			System.out.println("post: "+x+" "+y);
-//		}
-//		else if(d == Direction.LEFT) {
-//			x = x - Configs.TANK_SPEED;
-//			System.out.println("pre: "+x+" "+y);
-//			if(x < size/2) {
-//				x = size/2;
-//			}
-//			System.out.println("post: "+x+" "+y);
-//		}
-		System.out.println("post: "+x+" "+y);
 		relocate(x, y);
 		
 	}
-	private void checkCollision() {
-		
-	}
-	public void relocate(double x, double y) {
-		double topLeftXCoordinate = x - size/2;
-		double topLeftYCoordinate = y - size/2;
-		System.out.println("relocate: "+topLeftXCoordinate+" "+topLeftYCoordinate);
-		img.relocate(topLeftXCoordinate, topLeftYCoordinate);
-	}
 	public void setTrap() {
-//		Trap t = new Trap();
-//		Point loc = this.getImg().getLocation();
-//		game.addO(t.getImg(), loc.x, loc.y);
+		Trap t = new Trap(this.x, this.y, this.game);
+		game.addGameObject(t);
+	}
+	public void fire() {
+		Missile m = new Missile(this.x, this.y, this.game, Direction.getDirectionFromAngle(this.img.getRotate()));
+		game.addGameObject(m);
 	}
 }

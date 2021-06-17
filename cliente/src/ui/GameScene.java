@@ -2,6 +2,7 @@ package ui;
 
 
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -23,7 +24,6 @@ public class GameScene extends GeneralScene{
 
 			@Override
 			public void handle(KeyEvent event) {
-				System.out.println("pressed");
 				game.handleInput(event.getCode());
 				
 			}
@@ -61,6 +61,17 @@ public class GameScene extends GeneralScene{
 	public void addImageView(ImageView img, double d, double e) {
 		gamePane.getChildren().add(img);
 		img.relocate(d, e);
+	}
+	public void removeImageView(ImageView img) {
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				gamePane.getChildren().remove(img);
+				
+			}
+		});
+		
 	}
 	
 
