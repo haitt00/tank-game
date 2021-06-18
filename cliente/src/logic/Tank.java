@@ -19,7 +19,7 @@ public class Tank extends GameObject{
 		this.lives = Configs.MAX_LIVES;
 		System.out.println(x+" "+y+" "+teamId+" "+name);
 	}
-	public void turn(Direction d) {
+	private void turn(Direction d) {
 		img.setRotate(d.getAngle());
 	}
 	public void move(Direction d) {
@@ -49,7 +49,7 @@ public class Tank extends GameObject{
 			this.takeDam();
 		}
 	}
-	public void translate(Direction d) {
+	private void translate(Direction d) {
 		if(d == Direction.UP) {
 			y = game.checkCollision(this, x, y - Configs.TANK_SPEED, d).getNewPos();
 		}
