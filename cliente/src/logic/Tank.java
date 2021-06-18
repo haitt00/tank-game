@@ -1,5 +1,7 @@
 package logic;
 
+import java.util.ArrayList;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -7,6 +9,7 @@ public class Tank extends GameObject{
 	String name;
 	String teamId;
 	int lives;
+	Trap justSetTrap;
 	public Tank(double x, double y, Game game, String name, String teamId) {
 		super(x, y, game);
 		img = new ImageView(new Image("/img/tank1.png", Configs.TANK_SIZE, Configs.TANK_SIZE, true, true));
@@ -31,8 +34,17 @@ public class Tank extends GameObject{
 		updateStateHitTrap();
 	}
 	private void updateStateHitTrap() {
-		Trap trap = game.checkHitTrap(this);
-		if(trap!=null) {
+		ArrayList<Trap> traps = game.checkHitTrap(this);
+		if(this.justSetTrap!=null) {
+			if(traps==null||(!traps.contains(this.justSetTrap))) {
+				this.justSetTrap = null;
+			}
+		}
+		for (Trap trap: traps) {
+			if(trap==this.justSetTrap) {
+				continue;
+			}
+			System.out.println("HIT");
 			game.removeGameObject(trap);
 			this.takeDam();
 		}
@@ -59,6 +71,7 @@ public class Tank extends GameObject{
 			t.hide();
 		}
 		game.addGameObject(t);
+		this.justSetTrap = t;
 	}
 	public void fire() {
 		Missile m = new Missile(this.x, this.y, this.game, Direction.getDirectionFromAngle(this.img.getRotate()), this.teamId);
