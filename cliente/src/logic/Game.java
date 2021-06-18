@@ -64,6 +64,7 @@ public class Game {
 	public void addGameObject(GameObject gameObject) {
 		if(gameObject instanceof Trap) {
 			this.traps.add((Trap) gameObject);
+			System.out.println("ADDED TRAP");
 		}
 		double topLeftXCoordinate = gameObject.getX() - gameObject.getSize() / 2;
 		double topLeftYCoordinate = gameObject.getY() - gameObject.getSize() / 2;
@@ -84,17 +85,35 @@ public class Game {
 
 	public void handleInput(String name, KeyCode keyCode) {
 		Tank tank = this.tanks.get(name);
-		if (keyCode == Constants.KEY_UP) {
+		if (keyCode == Constants.KEY_UP
+				|| keyCode == Constants.KEY_UP_0
+				|| keyCode == Constants.KEY_UP_1
+				|| keyCode == Constants.KEY_UP_2) {
 			tank.move(Direction.UP);
-		} else if (keyCode == Constants.KEY_DOWN) {
+		} else if (keyCode == Constants.KEY_DOWN
+				|| keyCode == Constants.KEY_DOWN_0
+				|| keyCode == Constants.KEY_DOWN_1
+				|| keyCode == Constants.KEY_DOWN_2) {
 			tank.move(Direction.DOWN);
-		} else if (keyCode == Constants.KEY_RIGHT) {
+		} else if (keyCode == Constants.KEY_RIGHT
+				|| keyCode == Constants.KEY_RIGHT_0
+				|| keyCode == Constants.KEY_RIGHT_1
+				|| keyCode == Constants.KEY_RIGHT_2) {
 			tank.move(Direction.RIGHT);
-		} else if (keyCode == Constants.KEY_LEFT) {
+		} else if (keyCode == Constants.KEY_LEFT
+				|| keyCode == Constants.KEY_LEFT_0
+				|| keyCode == Constants.KEY_LEFT_1
+				|| keyCode == Constants.KEY_LEFT_2) {
 			tank.move(Direction.LEFT);
-		} else if (keyCode == Constants.KEY_FIRE) {
+		} else if (keyCode == Constants.KEY_FIRE
+				|| keyCode == Constants.KEY_FIRE_0
+				|| keyCode == Constants.KEY_FIRE_1
+				|| keyCode == Constants.KEY_FIRE_2) {
 			tank.fire();
-		} else if (keyCode == Constants.KEY_TRAP) {
+		} else if (keyCode == Constants.KEY_TRAP
+				|| keyCode == Constants.KEY_TRAP_0
+				|| keyCode == Constants.KEY_TRAP_1
+				|| keyCode == Constants.KEY_TRAP_2) {
 			tank.setTrap();
 		}
 	}
@@ -234,22 +253,25 @@ public class Game {
 		return (int) Math.floor(position / Configs.WALL_SIZE);
 	}
 
-	public Trap checkHitTrap(Tank tank) {
+	public ArrayList<Trap> checkHitTrap(Tank tank) {
+		ArrayList<Trap> result = new ArrayList<Trap>();
 		for(Trap trap: this.traps) {
+			System.out.println("TRAP: "+isOverlapping(trap, tank));
 			if(isOverlapping(trap, tank)) {
-				return trap;
+				result.add(trap);
 			}
 		}
-		return null;
+		return result;
 	}
 	private boolean isOverlapping(GameObject obj1, GameObject obj2) {
-		
+		System.out.println("OBJ1: "+obj1.getUp()+" "+obj1.getDown()+" "+obj1.getRight()+" "+obj1.getLeft());
+		System.out.println("OBJ2: "+obj2.getUp()+" "+obj2.getDown()+" "+obj2.getRight()+" "+obj2.getLeft());
 		if (obj1.getRight() < obj2.getLeft() 
 	      || obj1.getLeft() > obj2.getRight()) {
 	        return false;
 	    }
-	    if (obj1.getUp() < obj2.getDown() 
-	      || obj1.getDown() > obj2.getUp()) {
+	    if (obj1.getUp() > obj2.getDown() 
+	      || obj1.getDown() < obj2.getUp()) {
 	        return false;
 	    }
 	    return true;

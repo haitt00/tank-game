@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -25,7 +26,23 @@ public class GameScene extends GeneralScene{
 
 			@Override
 			public void handle(KeyEvent event) {
+				KeyCode c = event.getCode();
 				String selfName = Client.getInstance().getName();
+				if(c==Constants.KEY_DOWN_0||c==Constants.KEY_UP_0
+						||c==Constants.KEY_RIGHT_0||c==Constants.KEY_LEFT_0
+						||c==Constants.KEY_FIRE_0||c==Constants.KEY_TRAP_0) {
+					selfName = "user0";
+				}
+				if(c==Constants.KEY_DOWN_1||c==Constants.KEY_UP_1
+						||c==Constants.KEY_RIGHT_1||c==Constants.KEY_LEFT_1
+						||c==Constants.KEY_FIRE_1||c==Constants.KEY_TRAP_1) {
+					selfName = "user1";
+				}
+				if(c==Constants.KEY_DOWN_2||c==Constants.KEY_UP_2
+						||c==Constants.KEY_RIGHT_2||c==Constants.KEY_LEFT_2
+						||c==Constants.KEY_FIRE_2||c==Constants.KEY_TRAP_2) {
+					selfName = "user2";
+				}
 				game.handleInput(selfName, event.getCode());
 				
 			}
