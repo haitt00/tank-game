@@ -32,6 +32,13 @@ public class Game {
 	public Tank getSelfTank() {
 		return this.tanks.get(Client.getInstance().getName());
 	}
+	public Tank getTank(String name) {
+		return this.tanks.get(name);
+	}
+	public boolean isSameTeam(String name) {
+		//todo: implement 
+		return false;
+	}
 	public void generateTanks() {
 		
 		double padding = Configs.TANK_SIZE / 2 + Configs.WALL_SIZE;

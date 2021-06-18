@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import ui.GameScene;
 
 public class Tank extends GameObject{
 	String name;
@@ -20,6 +21,11 @@ public class Tank extends GameObject{
 		this.lives = Configs.MAX_LIVES;
 		System.out.println(x+" "+y+" "+teamId+" "+name);
 	}
+	
+	public int getLives() {
+		return lives;
+	}
+
 	private void turn(Direction d) {
 		img.setRotate(d.getAngle());
 	}
@@ -48,6 +54,8 @@ public class Tank extends GameObject{
 			System.out.println("HIT");
 			trap.activate();
 			this.takeDam();
+			game.gameScene.updateScoreBoard();
+			
 		}
 	}
 	private void translate(Direction d) {
