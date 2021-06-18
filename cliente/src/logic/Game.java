@@ -50,6 +50,7 @@ public class Game {
 				t = new Tank(Constants.GAME_SIZE - padding, Constants.GAME_SIZE - padding, this, name, "2");
 				break;
 			case 3:
+//				return;
 				t = new Tank(padding, Constants.GAME_SIZE - padding, this, name, "2");
 				break;
 			}
@@ -255,6 +256,7 @@ public class Game {
 	public ArrayList<Trap> checkHitTrap(Tank tank) {
 		ArrayList<Trap> result = new ArrayList<Trap>();
 		for(Trap trap: this.traps) {
+			System.out.println("TRAP: "+isOverlapping(trap, tank));
 			if(isOverlapping(trap, tank)) {
 				result.add(trap);
 			}
@@ -262,6 +264,8 @@ public class Game {
 		return result;
 	}
 	private boolean isOverlapping(GameObject obj1, GameObject obj2) {
+		System.out.println("OBJ1: "+obj1.getUp()+" "+obj1.getDown()+" "+obj1.getRight()+" "+obj1.getLeft());
+		System.out.println("OBJ2: "+obj2.getUp()+" "+obj2.getDown()+" "+obj2.getRight()+" "+obj2.getLeft());
 		if (obj1.getRight() < obj2.getLeft() 
 	      || obj1.getLeft() > obj2.getRight()) {
 	        return false;

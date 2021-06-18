@@ -10,7 +10,6 @@ public class Tank extends GameObject{
 	String teamId;
 	int lives;
 	Trap justSetTrap;
-	boolean canSetTrap = true;
 	public Tank(double x, double y, Game game, String name, String teamId) {
 		super(x, y, game);
 		img = new ImageView(new Image("/img/tank1.png", Configs.TANK_SIZE, Configs.TANK_SIZE, true, true));
@@ -20,7 +19,7 @@ public class Tank extends GameObject{
 		this.lives = Configs.MAX_LIVES;
 		System.out.println(x+" "+y+" "+teamId+" "+name);
 	}
-	private void turn(Direction d) {
+	public void turn(Direction d) {
 		img.setRotate(d.getAngle());
 	}
 	public void move(Direction d) {
@@ -46,11 +45,11 @@ public class Tank extends GameObject{
 				continue;
 			}
 			System.out.println("HIT");
-			trap.activate();
+			game.removeGameObject(trap);
 			this.takeDam();
 		}
 	}
-	private void translate(Direction d) {
+	public void translate(Direction d) {
 		if(d == Direction.UP) {
 			y = game.checkCollision(this, x, y - Configs.TANK_SPEED, d).getNewPos();
 		}
@@ -67,14 +66,12 @@ public class Tank extends GameObject{
 		
 	}
 	public void setTrap() {
-		if(this.canSetTrap) {
-			Trap t = new Trap(this.x, this.y, this.game, this);
-			if(!this.teamId.equals(game.getSelfTank().teamId)) {
-				t.hide();
-			}
-			game.addGameObject(t);
-			this.justSetTrap = t;
+		Trap t = new Trap(this.x, this.y, this.game);
+		if(!this.teamId.equals(game.getSelfTank().teamId)) {
+			t.hide();
 		}
+		game.addGameObject(t);
+		this.justSetTrap = t;
 	}
 	public void fire() {
 		Missile m = new Missile(this.x, this.y, this.game, Direction.getDirectionFromAngle(this.img.getRotate()), this.teamId);
