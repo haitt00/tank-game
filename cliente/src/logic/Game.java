@@ -234,13 +234,15 @@ public class Game {
 		return (int) Math.floor(position / Configs.WALL_SIZE);
 	}
 
-	public Trap checkHitTrap(Tank tank) {
+	public ArrayList<Trap> checkHitTrap(Tank tank) {
+		ArrayList<Trap> result = new ArrayList<Trap>();
 		for(Trap trap: this.traps) {
+			System.out.println("TRAP: "+isOverlapping(trap, tank));
 			if(isOverlapping(trap, tank)) {
-				return trap;
+				result.add(trap);
 			}
 		}
-		return null;
+		return result;
 	}
 	private boolean isOverlapping(GameObject obj1, GameObject obj2) {
 		
