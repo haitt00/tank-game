@@ -248,8 +248,8 @@ public class Game {
 	      || obj1.getLeft() > obj2.getRight()) {
 	        return false;
 	    }
-	    if (obj1.getUp() < obj2.getDown() 
-	      || obj1.getDown() > obj2.getUp()) {
+	    if (obj1.getUp() > obj2.getDown() 
+	      || obj1.getDown() < obj2.getUp()) {
 	        return false;
 	    }
 	    return true;
