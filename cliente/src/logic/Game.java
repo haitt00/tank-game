@@ -50,7 +50,6 @@ public class Game {
 				t = new Tank(Constants.GAME_SIZE - padding, Constants.GAME_SIZE - padding, this, name, "2");
 				break;
 			case 3:
-//				return;
 				t = new Tank(padding, Constants.GAME_SIZE - padding, this, name, "2");
 				break;
 			}
@@ -237,7 +236,6 @@ public class Game {
 	public ArrayList<Trap> checkHitTrap(Tank tank) {
 		ArrayList<Trap> result = new ArrayList<Trap>();
 		for(Trap trap: this.traps) {
-			System.out.println("TRAP: "+isOverlapping(trap, tank));
 			if(isOverlapping(trap, tank)) {
 				result.add(trap);
 			}
