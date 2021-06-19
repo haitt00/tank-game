@@ -115,7 +115,7 @@ public class Commander {
 	public String requestEndGame() {
 		Room room = requestFindRoom(client.getRoomId());
 		if (room == null || !room.hasClient(client)) {
-			return toErrorSyntax("Not in any room");
+			return null;
 		}
 		
 		synchronized (this) {
