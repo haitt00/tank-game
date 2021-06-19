@@ -135,6 +135,14 @@ public class Room implements Runnable {
 
 		}
 		
+		for (String key: clients.keySet()) {
+			Client c = clients.get(key);
+			c.setRoomId(null);
+			c.setTeamId(null);
+			clients.remove(key);
+			clientWriters.remove(key);
+		}
+		
 		System.out.println("Room#" + id + " has ended game.");
 	}
 }
