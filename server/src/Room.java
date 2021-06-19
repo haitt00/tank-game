@@ -16,6 +16,7 @@ public class Room implements Runnable {
 	public static final int CLIENTS_PER_ROOM = 4;
 	public static final int TEAMS_PER_ROOM = 2;
 	public static final int NUMBER_OF_MAPS = 5;
+	public static final int TIME_WAITING = 30; 		//seconds
 
 	public Room(String id) {
 		this.id = id;
@@ -118,7 +119,19 @@ public class Room implements Runnable {
 	@Override
 	public void run() {
 		System.out.println("Room#" + id + " runs");
+		RoomTimer waitTimer = new RoomTimer(this, TIME_WAITING);
+		waitTimer.start();
+		
 		while (true) {
+			if (!waitTimer.isRunning()) {
+				try {
+					broadcast(Opcode.ERROR, "Time out");
+				} catch (IOException e) {
+					System.out.println("Error broadcasting at room#" + id);
+				}
+				break;
+			}
+				
 			synchronized (this) {
 				if (isFull()) {
 					try {
@@ -130,7 +143,9 @@ public class Room implements Runnable {
 				}
 			}
 		}
-
+		
+		waitTimer.interrupt();
+		
 		while (running) {
 
 		}
@@ -143,6 +158,6 @@ public class Room implements Runnable {
 			clientWriters.remove(key);
 		}
 		
-		System.out.println("Room#" + id + " has ended game.");
+		System.out.println("Room#" + id + " stops");
 	}
 }

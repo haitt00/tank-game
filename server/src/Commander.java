@@ -85,10 +85,10 @@ public class Commander {
 		}
 		currentMembers += client.getName();
 
+		System.out.println("Client#" + client.getName() + " joins room#" + roomId);
 		room.addClient(client);
 		room.addClientWriter(client.getName(), requestFindClientWriter(client.getName()));
 
-		System.out.println("Client#" + client.getName() + " joins room#" + roomId);
 		return toSyntax(Opcode.ROOM_ACCEPTED, roomId + " " + currentMembers);
 	}
 

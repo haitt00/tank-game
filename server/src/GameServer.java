@@ -41,17 +41,16 @@ public class GameServer extends Thread {
 		System.out.println("Server [" + serverName + ":" + serverPort + "] is running ...");
 		try {
 			listener = new ServerSocket(serverPort);
+			while (true) {
+				try {
+					Socket clientSocket = listener.accept();
+					clientManager.executeListener(new ClientListener(clientSocket, this));
+				} catch (IOException e) {
+					System.out.println(e.getMessage());
+				}
+			}
 		} catch (IOException e) {
 			System.out.println("Error starting server [" + serverName + ":" + serverPort + "]");
-		}
-
-		while (true) {
-			try {
-				Socket clientSocket = listener.accept();
-				clientManager.executeListener(new ClientListener(clientSocket, this));
-			} catch (IOException e) {
-				System.out.println(e.getMessage());
-			}
 		}
 	}
 
