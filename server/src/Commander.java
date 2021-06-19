@@ -111,6 +111,21 @@ public class Commander {
 		client.setTeamId(null);
 		return null;
 	}
+	
+	public String requestEndGame() {
+		Room room = requestFindRoom(client.getRoomId());
+		if (room == null || !room.hasClient(client)) {
+			return toErrorSyntax("Not in any room");
+		}
+		
+		synchronized (this) {
+			if (room.isRunning()) {
+				room.endGame();
+				gameServer.getRoomManager().removeRoom(room.getId());
+			}
+		}
+		return null;
+	}
 
 	public String parseCommand(String command) throws IOException {
 		String[] params = command.split(" ");
@@ -136,9 +151,13 @@ public class Commander {
 		if (Opcode.MOVE.name().equals(opcode) || Opcode.SHOOT.name().equals(opcode)
 				|| Opcode.SET_TRAP.name().equals(opcode)) {
 			Room room = gameServer.getRoomManager().findRoom(client.getRoomId());
+			System.out.println("Room#" + client.getRoomId() + ": " + client.getName() + " " + command);
 			room.broadcastExcept(client.getName(), command + " " + client.getName());
 			return null;
 		}
+		
+		if (Opcode.END_GAME.name().equals(opcode))
+			return requestExitRoom();
 
 		System.out.println("Invalid packet: " + command);
 		return toErrorSyntax("Invalid packet: " + command);

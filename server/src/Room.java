@@ -134,5 +134,7 @@ public class Room implements Runnable {
 		while (running) {
 
 		}
+		
+		System.out.println("Room#" + id + " has ended game.");
 	}
 }
