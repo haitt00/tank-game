@@ -32,4 +32,19 @@ public class Direction {
 		}
 		return null;
 	}
+	public static Direction getOpposite(Direction direction) {
+		if(direction == Direction.UP) {
+			return Direction.DOWN;
+		}
+		else if(direction == Direction.DOWN) {
+			return Direction.UP;
+		}
+		else if(direction == Direction.RIGHT) {
+			return Direction.LEFT;
+		}
+		else if(direction == Direction.LEFT) {
+			return Direction.RIGHT;
+		}	
+		return null;
+	}
 }
