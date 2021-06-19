@@ -12,30 +12,40 @@ public class Room implements Runnable {
 	private Map<String, Client> clients = new HashMap<String, Client>();
 	private Map<String, ClientWriter> clientWriters = new HashMap<String, ClientWriter>();
 	private boolean running = false;
+	private boolean waiting = true;
 
 	public static final int CLIENTS_PER_ROOM = 4;
 	public static final int TEAMS_PER_ROOM = 2;
 	public static final int NUMBER_OF_MAPS = 5;
-	public static final int TIME_WAITING = 30; 		//seconds
+	public static final int TIME_WAITING = 300; 		//seconds
 
-	public Room(String id) {
+	public Room(String id, RoomManager roomManager) {
 		this.id = id;
+		new RoomTimer(this, TIME_WAITING, roomManager).start();
 	}
 
 	public String getId() {
 		return id;
 	}
-
-	public Set<String> getClientNames() {
-		return clientWriters.keySet();
+	
+	public Map<String, Client> getClients(){
+		return clients;
 	}
 
-	public boolean isRunning() {
-		return running;
+	public Map<String, ClientWriter> getClientWriters() {
+		return clientWriters;
+	}
+
+	public Set<String> getClientNames() {
+		return clients.keySet();
 	}
 
 	public Client findClient(String clientName) {
 		return clients.get(clientName);
+	}
+	
+	public ClientWriter findClientWriter(String clientName) {
+		return clientWriters.get(clientName);
 	}
 
 	public synchronized void addClient(Client c) {
@@ -62,6 +72,14 @@ public class Room implements Runnable {
 	public boolean isEmpty() {
 		return clients.size() == 0;
 	}
+	
+	public boolean isRunning() {
+		return running;
+	}
+	
+	public boolean isWaiting() {
+		return waiting;
+	}
 
 	public void startGame() throws IOException {
 		String teamId = null;
@@ -77,7 +95,12 @@ public class Room implements Runnable {
 			cw.sendPacket(Opcode.START_GAME, teamId + " " + String.valueOf(randomMap));
 		}
 		running = true;
+		waiting = false;
 		System.out.println("Room#" + id + " starts game");
+	}
+	
+	public void endWaiting() {
+		waiting = false;
 	}
 
 	public void endGame() {
@@ -119,33 +142,19 @@ public class Room implements Runnable {
 	@Override
 	public void run() {
 		System.out.println("Room#" + id + " runs");
-		RoomTimer waitTimer = new RoomTimer(this, TIME_WAITING);
-		waitTimer.start();
 		
-		while (true) {
-			if (!waitTimer.isRunning()) {
-				try {
-					broadcast(Opcode.ERROR, "Time out");
-				} catch (IOException e) {
-					System.out.println("Error broadcasting at room#" + id);
-				}
-				break;
-			}
-				
+		while (waiting) {
 			synchronized (this) {
 				if (isFull()) {
 					try {
 						startGame();
-						break;
 					} catch (IOException e) {
 						System.out.println("Error starting game at room#" + id);
 					}
 				}
 			}
 		}
-		
-		waitTimer.interrupt();
-		
+				
 		while (running) {
 
 		}
@@ -154,10 +163,9 @@ public class Room implements Runnable {
 			Client c = clients.get(key);
 			c.setRoomId(null);
 			c.setTeamId(null);
-			clients.remove(key);
-			clientWriters.remove(key);
 		}
-		
+		clients.clear();
+		clientWriters.clear();
 		System.out.println("Room#" + id + " stops");
 	}
 }

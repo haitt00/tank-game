@@ -16,7 +16,7 @@ public class RoomManager {
 
 	public synchronized Room generateRoom() {
 		if (rooms.size() < maxRooms) {
-			Room r = new Room(String.valueOf(incRoomId++));
+			Room r = new Room(String.valueOf(incRoomId++), this);
 			addRoom(r);
 			executeRoom(r);
 			return r;
