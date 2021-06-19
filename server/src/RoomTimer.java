@@ -21,7 +21,7 @@ public class RoomTimer extends Thread {
 				System.out.println("Count: " + i);
 				Thread.sleep(1000);
 			}
-			room.broadcast(Opcode.ERROR, "Room time out");
+			room.broadcast(Opcode.ROOM_TIMEOUT, "Room time out");
 			room.endWaiting();
 			roomManager.removeRoom(room.getId());
 		} catch (InterruptedException e) {
