@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import javafx.scene.input.KeyCode;
 import network.Client;
@@ -13,14 +14,12 @@ public class Game {
 	int[][] wallMatrix;
 	boolean over;
 
-	public Game() {
-
-		wallMatrix = getFakeWallMatrix();
+	public Game(int mapCode) {
 
 		gameScene = new GameScene();
 		gameScene.setGame(this);
 
-		generateWalls();
+		generateWalls(mapCode);
 		generateTanks();
 		
 	}
@@ -43,27 +42,33 @@ public class Game {
 		
 		double padding = Configs.TANK_SIZE / 2 + Configs.WALL_SIZE;
 		ArrayList<String> names = Client.getInstance().getPlayerNames();
-		int count = 0;
+		Collections.sort(names);
+		int countTeam1 = 0;
+		int countTeam2 = 0;
 		Tank t = null;
 		for(String name: names){
-			switch(count) {
-			case 0:
-				t = new Tank(padding, padding, this, name, "1");
-				break;
-			case 1:
-				t = new Tank(Constants.GAME_SIZE - padding, padding, this, name, "1");
-				break;
-			case 2:
-				t = new Tank(Constants.GAME_SIZE - padding, Constants.GAME_SIZE - padding, this, name, "2");
-				break;
-			case 3:
-				t = new Tank(padding, Constants.GAME_SIZE - padding, this, name, "2");
-				break;
+			if(Client.getInstance().getTeamId(name).equals("1")) {
+				if(countTeam1==0) {
+					t = new Tank(padding, padding, this, name, "1");
+					t.move(Direction.DOWN);
+				}
+				else {
+					t = new Tank(Constants.GAME_SIZE - padding, padding, this, name, "1");
+					t.move(Direction.DOWN);
+				}
+				countTeam1++;
 			}
-			
+			if(Client.getInstance().getTeamId(name).equals("2")) {
+				if(countTeam2==0) {
+					t = new Tank(Constants.GAME_SIZE - padding, Constants.GAME_SIZE - padding, this, name, "2");
+				}
+				else {
+					t = new Tank(padding, Constants.GAME_SIZE - padding, this, name, "2");
+				}
+				countTeam2++;
+			}
 			this.tanks.put(name, t);
 			this.addGameObject(t);
-			count++;
 		}
 			
 	}
@@ -105,7 +110,8 @@ public class Game {
 		}
 	}
 
-	private void generateWalls() {
+	private void generateWalls(int mapCode) {
+		wallMatrix = getFakeWallMatrix(mapCode);
 		for (int i = 0; i < Configs.GRID_EDGE; i++) {
 			for (int j = 0; j < Configs.GRID_EDGE; j++) {
 				if (wallMatrix[i][j] == 1) {
@@ -116,10 +122,9 @@ public class Game {
 		}
 	}
 
-	private int[][] getFakeWallMatrix() {
-		return Configs.getFakeMap(2);
-//		return Map.getRandomMap();
-		
+	private int[][] getFakeWallMatrix(int mapCode) {
+		return Configs.getFakeMap(mapCode);
+
 	}
 	
 	public CollisionDetail checkCollision(GameObject object, double newX, double newY, Direction direction){

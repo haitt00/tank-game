@@ -8,8 +8,14 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 
+import org.json.JSONObject;
+
+import logic.Game;
 import main.Main;
+import ui.GameScene;
 import ui.LobbyScene;
 import ui.LogOnScene;
 import ui.WaitingScene;
@@ -18,9 +24,9 @@ public class Client implements Runnable{
 	private Socket socket;
 	private BufferedReader reader;
 	private DataOutputStream writer;
-	private String name = "user3";
+	private String name;
 	private String roomId;
-	private ArrayList<String> playerNames = new ArrayList<String>(Arrays.asList("user1", "user2", "user3", "user4"));
+	private HashMap<String, String> players = new HashMap<String, String>();;
 	private static Client client;
 	
 	public static final int SERVER_PORT = 5588;
@@ -144,14 +150,16 @@ public class Client implements Runnable{
 		String members = params[2];
 		System.out.println("members: "+members);
 		String[] arrayMembers = members.split(",");
-		this.playerNames = new ArrayList<String>(Arrays.asList(arrayMembers));
+		for (int i = 0; i < arrayMembers.length; i++) {
+			this.players.put(arrayMembers[i], null);
+		}
 		Main.changeScene(new WaitingScene());
 	}
 	private void receiveJoinMember(String[] params) {
 		System.out.println("receiveJoinMember");
 		String newName = params[1];
 		System.out.println("newName: "+newName);	
-		this.playerNames.add(newName);
+		this.players.put(newName, null);
 		((WaitingScene) Main.getCurrentScene()).updateContent();
 		
 	}
@@ -159,14 +167,24 @@ public class Client implements Runnable{
 		System.out.println("receiveLeaveMember");
 		String leftName = params[1];
 		System.out.println("leftName: "+leftName);
-		this.playerNames.remove(leftName);
+		this.players.remove(leftName);
 		((WaitingScene) Main.getCurrentScene()).updateContent();
 	}
 	private void receiveStartGame(String[] params) {
 		System.out.println("receiveStartGame");
-		for (int i = 0; i < params.length; i++) {
-			System.out.println(params[i]);
+		
+		JSONObject teamIdsMap = new JSONObject(params[1]);
+		Iterator<String> keys = teamIdsMap.keys();
+		while(keys.hasNext()) {
+			String key = keys.next();
+			String teamId = teamIdsMap.getString(key);
+			this.players.put(key, teamId);
 		}
+		
+		int mapCode = Integer.parseInt(params[2]);
+		Game newGame = new Game(mapCode);
+		Main.changeScene(newGame.getGameScene());
+		
 	}
 	private void receiveRoomTimeout(String[] params) {
 		System.out.println("receiveRoomTimeout");
@@ -235,6 +253,9 @@ public class Client implements Runnable{
 	}
 
 	public ArrayList<String> getPlayerNames() {
-		return playerNames;
+		return new ArrayList<String>(players.keySet()) ;
+	}
+	public String getTeamId(String name) {
+		return this.players.get(name);
 	}
 }
