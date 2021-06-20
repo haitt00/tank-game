@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import org.json.JSONObject;
+
 public class Room implements Runnable {
 	private String id;
 	private Map<String, Client> clients = new HashMap<String, Client>();
@@ -88,11 +90,16 @@ public class Room implements Runnable {
 		
 		int randomMap = new Random().nextInt(NUMBER_OF_MAPS);
 
+		JSONObject teamIds = new JSONObject();
 		for (int i = 0; i < keys.size(); i++) {
-			ClientWriter cw = clientWriters.get(keys.get(i));
 			teamId = String.valueOf(i % TEAMS_PER_ROOM + 1);
 			clients.get(keys.get(i)).setTeamId(teamId);
-			cw.sendPacket(Opcode.START_GAME, teamId + " " + String.valueOf(randomMap));
+			teamIds.put(keys.get(i), teamId);
+		}
+		String teamIdsStr = teamIds.toString();
+		for (int i = 0; i < keys.size(); i++) {
+			ClientWriter cw = clientWriters.get(keys.get(i));
+			cw.sendPacket(Opcode.START_GAME, teamIdsStr + " " + String.valueOf(randomMap));
 		}
 		running = true;
 		waiting = false;
