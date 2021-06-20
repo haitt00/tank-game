@@ -61,6 +61,21 @@ public class Client implements Runnable{
 			case Opcode.LEAVE_MEMBER:
 				receiveLeaveMember(params);
 				break;
+			case Opcode.START_GAME:
+				receiveStartGame(params);
+				break;
+			case Opcode.ROOM_TIMEOUT:
+				receiveRoomTimeout(params);
+				break;
+			case Opcode.MOVE:
+				receiveMove(params);
+				break;
+			case Opcode.SHOOT:
+				receiveShoot(params);
+				break;
+			case Opcode.SET_TRAP:
+				receiveSetTrap(params);
+				break;
 	//		default:
 	//			sendError("Invalid packet " + input);
 	//			System.out.println("Client#" + name + " sends an invalid packet: " + input);
@@ -146,7 +161,24 @@ public class Client implements Runnable{
 		this.playerNames.remove(leftName);
 		((WaitingScene) Main.getCurrentScene()).updateContent();
 	}
-	
+	private void receiveStartGame(String[] params) {
+		System.out.println("receiveStartGame");
+		for (int i = 0; i < params.length; i++) {
+			System.out.println(params[i]);
+		}
+	}
+	private void receiveRoomTimeout(String[] params) {
+		System.out.println("receiveRoomTimeout");
+	}
+	private void receiveMove(String[] params) {
+		System.out.println("receiveMove");
+	}
+	private void receiveShoot(String[] params) {
+		System.out.println("receiveShoot");
+	}
+	private void receiveSetTrap(String[] params) {
+		System.out.println("receiveSetTrap");
+	}
 
 	@Override
 	public void run() {

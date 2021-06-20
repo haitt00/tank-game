@@ -5,6 +5,7 @@ public class Opcode {
 	public static final String JOIN_ROOM = "JOIN_ROOM";
 	public static final String EXIT_ROOM = "EXIT_ROOM";
 	public static final String EXIT_GAME = "EXIT_GAME";
+	public static final String END_GAME = "END_GAME";
 	
 	// Server sends
 	public static final String ERROR = "ERROR";
@@ -14,6 +15,8 @@ public class Opcode {
 	public static final String JOIN_MEMBER = "JOIN_MEMBER";
 	public static final String ROOM_ACCEPTED = "ROOM_ACCEPTED";
 	public static final String LEAVE_MEMBER = "LEAVE_MEMBER";
+	public static final String ROOM_TIMEOUT = "ROOM_TIMEOUT";
+	public static final String START_GAME = "START_GAME";
 	
 	// Both sends
 	public static final String MOVE = "MOVE";
