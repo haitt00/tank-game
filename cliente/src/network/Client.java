@@ -140,6 +140,7 @@ public class Client implements Runnable{
 		System.out.println("receiveRoomAccepted");
 		String roomId = params[1];
 		System.out.println("roomId: "+roomId);
+		this.roomId = roomId;
 		String members = params[2];
 		System.out.println("members: "+members);
 		String[] arrayMembers = members.split(",");
