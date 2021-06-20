@@ -6,10 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,6 +16,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import logic.Configs;
 import logic.Constants;
 import logic.Game;
@@ -77,7 +78,14 @@ public class GameScene extends GeneralScene{
 			
 			HBox hb = new HBox(20);
 			Label nameLabel = new Label(name);
-			//todo: customize teammate
+			Client client = Client.getInstance();
+			if(name.contentEquals(client.getName())) {
+				nameLabel.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, nameLabel.getFont().getSize()));
+			}
+			String teamId = client.getTeamId(client.getName());
+			if(client.getTeamId(name).equals(teamId)) {
+				nameLabel.setTextFill(Color.web("#ff0000"));
+			}
 			hb.getChildren().addAll(nameLabel, hbHeart);
 			scorePane.getChildren().add(hb);
 		}

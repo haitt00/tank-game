@@ -11,6 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import logic.Constants;
 import main.Main;
 import network.Client;
@@ -70,7 +72,7 @@ public class WaitingScene extends GeneralScene{
 				String name = Client.getInstance().getPlayerNames().get(i);
 				tf.setText(name);
 				if(name.contentEquals(Client.getInstance().getName())) {
-					tf.setStyle("-fx-control-inner-background: red;");
+					tf.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, tf.getFont().getSize()));
 				}
 				
 			}
