@@ -93,20 +93,47 @@ public class Game {
 		gameScene.removeImageView(gameObject.getImg());
 	}
 
-	public void handleInput(String name, KeyCode keyCode) {
-		Tank tank = this.tanks.get(name);
-		if (keyCode == Constants.KEY_UP) {
-			tank.move(Direction.UP);
-		} else if (keyCode == Constants.KEY_DOWN) {
-			tank.move(Direction.DOWN);
-		} else if (keyCode == Constants.KEY_RIGHT) {
-			tank.move(Direction.RIGHT);
-		} else if (keyCode == Constants.KEY_LEFT) {
-			tank.move(Direction.LEFT);
-		} else if (keyCode == Constants.KEY_FIRE) {
-			tank.fire();
+	public void handleInput(String name, KeyCode keyCode) {	
+		if(keyCode == Constants.KEY_UP||keyCode == Constants.KEY_DOWN
+				||keyCode == Constants.KEY_RIGHT||keyCode == Constants.KEY_LEFT) 
+		{
+			Direction d = null;
+			if (keyCode == Constants.KEY_UP) {
+				d = Direction.UP;
+			} else if (keyCode == Constants.KEY_DOWN) {
+				d = Direction.DOWN;
+			} else if (keyCode == Constants.KEY_RIGHT) {
+				d = Direction.RIGHT;
+			} else if (keyCode == Constants.KEY_LEFT) {
+				d = Direction.LEFT;
+			}
+			handleMove(name, d);
+		}
+		else if (keyCode == Constants.KEY_FIRE) {
+			handleShoot(name);
 		} else if (keyCode == Constants.KEY_TRAP) {
-			tank.setTrap();
+			handleSetTrap(name);
+		}
+	}
+	public void handleMove(String name, Direction d) {
+		Tank tank = this.tanks.get(name);
+		tank.move(d);
+		if(tank==this.getSelfTank()) {
+			Client.getInstance().sendMove(d);
+		}
+	}
+	public void handleShoot(String name) {
+		Tank tank = this.tanks.get(name);
+		tank.fire();
+		if(tank==this.getSelfTank()) {
+			Client.getInstance().sendShoot();
+		}
+	}
+	public void handleSetTrap(String name) {
+		Tank tank = this.tanks.get(name);
+		tank.setTrap();
+		if(tank==this.getSelfTank()) {
+			Client.getInstance().sendSetTrap();
 		}
 	}
 

@@ -13,6 +13,7 @@ import java.util.Iterator;
 
 import org.json.JSONObject;
 
+import logic.Direction;
 import logic.Game;
 import main.Main;
 import ui.GameScene;
@@ -120,6 +121,18 @@ public class Client implements Runnable{
 		System.out.println("sendExitRoom");
 		sendPacket(Opcode.EXIT_ROOM, "");
 	}
+	public void sendMove(Direction d) {
+		System.out.println("sendMove");
+		sendPacket(Opcode.MOVE, String.valueOf(d.getAngle()));
+	}
+	public void sendShoot() {
+		System.out.println("sendShoot");
+		sendPacket(Opcode.SHOOT);
+	}
+	public void sendSetTrap() {
+		System.out.println("sendSetTrap");
+		sendPacket(Opcode.SET_TRAP);
+	}
 	
 	
 	//receive
@@ -191,12 +204,16 @@ public class Client implements Runnable{
 	}
 	private void receiveMove(String[] params) {
 		System.out.println("receiveMove");
+		Direction d = Direction.getDirectionFromAngle(Double.parseDouble(params[1]));
+		((GameScene) Main.getCurrentScene()).getGame().handleMove(params[2], d);;
 	}
 	private void receiveShoot(String[] params) {
 		System.out.println("receiveShoot");
+		((GameScene) Main.getCurrentScene()).getGame().handleShoot(params[1]);
 	}
 	private void receiveSetTrap(String[] params) {
 		System.out.println("receiveSetTrap");
+		((GameScene) Main.getCurrentScene()).getGame().handleSetTrap(params[1]);
 	}
 
 	@Override

@@ -54,7 +54,6 @@ public class Tank extends GameObject{
 			System.out.println("HIT");
 			trap.activate();
 			this.takeDam();
-			game.gameScene.updateScoreBoard();
 			
 		}
 	}
@@ -95,5 +94,6 @@ public class Tank extends GameObject{
 		if(lives == 0) {
 			game.removeGameObject(this);
 		}
+		game.gameScene.updateScoreBoard();
 	}
 }

@@ -49,6 +49,11 @@ public class GameScene extends GeneralScene{
 	public void setGame(Game game) {
 		this.game = game;
 	}
+	
+
+	public Game getGame() {
+		return game;
+	}
 
 
 	@Override
@@ -98,8 +103,15 @@ public class GameScene extends GeneralScene{
 	}
 	
 	public void addImageView(ImageView img, double d, double e) {
-		gamePane.getChildren().add(img);
-		img.relocate(d, e);
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				gamePane.getChildren().add(img);
+				img.relocate(d, e);
+				
+			}
+		});
 	}
 	public void removeImageView(ImageView img) {
 		Platform.runLater(new Runnable() {
@@ -118,16 +130,25 @@ public class GameScene extends GeneralScene{
 			String name = names.get(i);
 
 			HBox hbHeart = this.hbHearts.get(name);
-			int count = 0;
-			Tank tank = game.getTank(name);
-			if(tank!=null) {
-				count = tank.getLives();
-			}
-			hbHeart.getChildren().clear();
-			for (int j = 0; j < count; j++) {
-				hbHeart.getChildren().add(new ImageView(
-						new Image("/img/heart.png")));
-			}
+			
+			Platform.runLater(new Runnable() {
+				
+				@Override
+				public void run() {
+					int count = 0;
+					Tank tank = game.getTank(name);
+					if(tank!=null) {
+						count = tank.getLives();
+					}
+					hbHeart.getChildren().clear();
+					for (int j = 0; j < count; j++) {
+						hbHeart.getChildren().add(new ImageView(
+								new Image("/img/heart.png")));
+					}
+					
+				}
+			});
+			
 		}
 	}
 	
