@@ -18,7 +18,7 @@ public class RoomTimer extends Thread {
 				if (room.isFull()) {
 					return;
 				}
-				System.out.println("Count: " + i);
+//				System.out.println("Count: " + i);
 				Thread.sleep(1000);
 			}
 			room.broadcast(Opcode.ROOM_TIMEOUT, "Room time out");
