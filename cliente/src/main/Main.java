@@ -33,17 +33,17 @@ public class Main extends Application{
 	}
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-//		new Thread(Client.getInstance()).start();
-//		Main.primaryStage = primaryStage;
-//		
-//		
-//		primaryStage.setScene(new LogOnScene());
-//		primaryStage.setTitle(Constants.GAME_TITLE);
-//		primaryStage.show();
-		Game game = new Game();
-		primaryStage.setScene(game.getGameScene());
+		new Thread(Client.getInstance()).start();
+		Main.primaryStage = primaryStage;
+		
+		
+		primaryStage.setScene(new LogOnScene());
 		primaryStage.setTitle(Constants.GAME_TITLE);
 		primaryStage.show();
+//		Game game = new Game();
+//		primaryStage.setScene(game.getGameScene());
+//		primaryStage.setTitle(Constants.GAME_TITLE);
+//		primaryStage.show();
 		
 	}
 
