@@ -3,17 +3,21 @@ package logic;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map.Entry;
+
 import javafx.scene.input.KeyCode;
+import main.Main;
 import network.Client;
 import ui.GameScene;
+import ui.ResultScene;
 
 public class Game {
 	GameScene gameScene;
 	HashMap<String, Tank> tanks = new HashMap<String, Tank>();
 	ArrayList<Trap> traps = new ArrayList<Trap>();
 	int[][] wallMatrix;
-	boolean over;
-
+	private HashMap<String, String> players = new HashMap<String, String>();
+	ArrayList<String> winners = new ArrayList<String>();
 	public Game(int mapCode) {
 
 		gameScene = new GameScene();
@@ -21,6 +25,8 @@ public class Game {
 
 		generateWalls(mapCode);
 		generateTanks();
+		
+		this.players = (HashMap<String, String>) Client.getInstance().getPlayers().clone();
 		
 	}
 
@@ -33,10 +39,6 @@ public class Game {
 	}
 	public Tank getTank(String name) {
 		return this.tanks.get(name);
-	}
-	public boolean isSameTeam(String name) {
-		//todo: implement 
-		return false;
 	}
 	public void generateTanks() {
 		
@@ -293,4 +295,39 @@ public class Game {
 	    }
 	    return true;
 	}
+	public boolean checkEndGame() {
+		if(this.tanks.size()>2) {
+			return false;
+		}
+		else if(this.tanks.size() == 2) {
+			ArrayList<Tank> tanksLeft = new ArrayList<Tank>(this.tanks.values());
+			if(tanksLeft.get(0).teamId.equals(tanksLeft.get(1).teamId)) {
+				return true;
+			}
+		}
+		return true;
+		
+	}
+	private ArrayList<String> getPlayerNamesInTeam(String teamId) {
+		ArrayList<String> result = new ArrayList<String>();
+		for (Entry<String, String> e: this.players.entrySet()) {
+			if(e.getValue().equals(teamId)) {
+				result.add(e.getKey());
+			}
+		}
+		return result;
+	} 
+	public void handleEndGame() {
+		ArrayList<Tank> tanksLeft = new ArrayList<Tank>(this.tanks.values());
+		String winningTeam = tanksLeft.get(0).teamId;
+		this.winners = this.getPlayerNamesInTeam(winningTeam);
+		Client.getInstance().sendEndGame();
+		Main.changeScene(new ResultScene());
+	}
+
+	public ArrayList<String> getWinners() {
+		return winners;
+	}
+	
+	
 }

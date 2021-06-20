@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.json.JSONObject;
 
@@ -27,7 +28,7 @@ public class Client implements Runnable{
 	private DataOutputStream writer;
 	private String name;
 	private String roomId;
-	private HashMap<String, String> players = new HashMap<String, String>();;
+	private HashMap<String, String> players = new HashMap<String, String>();
 	private static Client client;
 	
 	public static final int SERVER_PORT = 5588;
@@ -133,7 +134,10 @@ public class Client implements Runnable{
 		System.out.println("sendSetTrap");
 		sendPacket(Opcode.SET_TRAP);
 	}
-	
+	public void sendEndGame() {
+		System.out.println("sendEndGame");
+		sendPacket(Opcode.END_GAME);
+	}
 	
 	//receive
 	private void receiveClientAccepted(String[] params){
@@ -181,7 +185,9 @@ public class Client implements Runnable{
 		String leftName = params[1];
 		System.out.println("leftName: "+leftName);
 		this.players.remove(leftName);
-		((WaitingScene) Main.getCurrentScene()).updateContent();
+		if(Main.getCurrentScene() instanceof WaitingScene) {
+			((WaitingScene) Main.getCurrentScene()).updateContent();
+		}
 	}
 	private void receiveStartGame(String[] params) {
 		System.out.println("receiveStartGame");
@@ -201,6 +207,7 @@ public class Client implements Runnable{
 	}
 	private void receiveRoomTimeout(String[] params) {
 		System.out.println("receiveRoomTimeout");
+		Main.changeScene(new LobbyScene());
 	}
 	private void receiveMove(String[] params) {
 		System.out.println("receiveMove");
@@ -275,4 +282,10 @@ public class Client implements Runnable{
 	public String getTeamId(String name) {
 		return this.players.get(name);
 	}
+
+	public HashMap<String, String> getPlayers() {
+		return players;
+	}
+	
+	
 }

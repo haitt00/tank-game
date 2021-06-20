@@ -95,5 +95,8 @@ public class Tank extends GameObject{
 			game.removeGameObject(this);
 		}
 		game.gameScene.updateScoreBoard();
+		if(game.checkEndGame()) {
+			game.handleEndGame();
+		}
 	}
 }
