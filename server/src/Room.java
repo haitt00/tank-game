@@ -66,11 +66,11 @@ public class Room implements Runnable {
 	}
 
 	public boolean isFull() {
-		return clients.size() == CLIENTS_PER_ROOM;
+		return clientWriters.size() == CLIENTS_PER_ROOM;
 	}
 
 	public boolean isEmpty() {
-		return clients.size() == 0;
+		return clientWriters.size() == 0;
 	}
 	
 	public boolean isRunning() {
