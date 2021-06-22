@@ -51,21 +51,21 @@ public class Game {
 		for(String name: names){
 			if(Client.getInstance().getTeamId(name).equals("1")) {
 				if(countTeam1==0) {
-					t = new Tank(padding, padding, this, name, "1");
+					t = new Tank(padding, padding, this, name, "1", "1");
 					t.move(Direction.DOWN);
 				}
 				else {
-					t = new Tank(Constants.GAME_SIZE - padding, padding, this, name, "1");
+					t = new Tank(Constants.GAME_SIZE - padding, padding, this, name, "1", "3");
 					t.move(Direction.DOWN);
 				}
 				countTeam1++;
 			}
 			if(Client.getInstance().getTeamId(name).equals("2")) {
 				if(countTeam2==0) {
-					t = new Tank(Constants.GAME_SIZE - padding, Constants.GAME_SIZE - padding, this, name, "2");
+					t = new Tank(Constants.GAME_SIZE - padding, Constants.GAME_SIZE - padding, this, name, "2", "2");
 				}
 				else {
-					t = new Tank(padding, Constants.GAME_SIZE - padding, this, name, "2");
+					t = new Tank(padding, Constants.GAME_SIZE - padding, this, name, "2", "4");
 				}
 				countTeam2++;
 			}

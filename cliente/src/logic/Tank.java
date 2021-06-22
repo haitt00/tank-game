@@ -12,9 +12,11 @@ public class Tank extends GameObject{
 	int lives;
 	Trap justSetTrap;
 	boolean canSetTrap = true;
-	public Tank(double x, double y, Game game, String name, String teamId) {
+	String color;
+	
+	public Tank(double x, double y, Game game, String name, String teamId, String color) {
 		super(x, y, game);
-		img = new ImageView(new Image("/img/tank1.png", Configs.TANK_SIZE, Configs.TANK_SIZE, true, true));
+		img = new ImageView(new Image("/img/tank"+color+".png", Configs.TANK_SIZE, Configs.TANK_SIZE, true, true));
 		size = Configs.TANK_SIZE;
 		this.name = name;
 		this.teamId = teamId;

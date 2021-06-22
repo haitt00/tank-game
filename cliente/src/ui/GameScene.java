@@ -3,6 +3,7 @@ package ui;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import javafx.application.Platform;
@@ -70,10 +71,15 @@ public class GameScene extends GeneralScene{
 		scorePane = new VBox(10);
 		scorePane.setPadding(new Insets(10));
 		ArrayList<String> names = Client.getInstance().getPlayerNames();
+		Collections.sort(names);
 		this.hbHearts = new HashMap<String, HBox>();
+		int countTeam1 = 0;
+		int countTeam2 = 0;
 		for (int i = 0; i < names.size(); i++) {
+			
 			String name = names.get(i);
-
+			System.out.println("name: "+name);
+			
 			HBox hbHeart = new HBox(5);			
 			this.hbHearts.put(name, hbHeart);
 			for (int j = 0; j < Configs.MAX_LIVES; j++) {
@@ -85,11 +91,35 @@ public class GameScene extends GeneralScene{
 			Label nameLabel = new Label(name);
 			Client client = Client.getInstance();
 			if(name.contentEquals(client.getName())) {
-				nameLabel.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, nameLabel.getFont().getSize()));
+				nameLabel.setText(nameLabel.getText()+" (me)");
 			}
-			String teamId = client.getTeamId(client.getName());
-			if(client.getTeamId(name).equals(teamId)) {
-				nameLabel.setTextFill(Color.web("#ff0000"));
+			String ownTeamId = client.getTeamId(client.getName());
+			String teamId = client.getTeamId(name);
+			System.out.println("teamId "+teamId);
+			System.out.println("countTeam1 "+countTeam1);
+			System.out.println("countTeam2 "+countTeam2);
+			String colorStr = "";
+			if(teamId.equals("1") ) {
+				if(countTeam1 == 0) {
+					nameLabel.setTextFill(Color.web("#32a852"));
+				}
+				else {
+					nameLabel.setTextFill(Color.web("#3297a8"));
+				}
+				countTeam1++;
+			}
+			if(teamId.equals("2") ) {
+				if(countTeam2 == 0) {
+					nameLabel.setTextFill(Color.web("#a83236"));
+				}
+				else {
+					nameLabel.setTextFill(Color.web("#a88b32"));
+				}
+				countTeam2++;
+			}
+			
+			if(teamId.equals(ownTeamId)) {
+				nameLabel.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, nameLabel.getFont().getSize()));
 			}
 			hb.getChildren().addAll(nameLabel, hbHeart);
 			scorePane.getChildren().add(hb);

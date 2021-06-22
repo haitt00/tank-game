@@ -35,7 +35,10 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		new Thread(Client.getInstance()).start();
 		Main.primaryStage = primaryStage;
-		
+		primaryStage.setOnCloseRequest((ae) -> {
+            Platform.exit();
+            System.exit(0);
+        });
 		
 		primaryStage.setScene(new LogOnScene());
 		primaryStage.setTitle(Constants.GAME_TITLE);
