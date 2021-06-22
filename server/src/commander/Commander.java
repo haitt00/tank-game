@@ -1,10 +1,17 @@
+package commander;
 import java.io.IOException;
+
+import commander.opcode.Opcode;
+import manager.client.Client;
+import manager.client.ClientWriter;
+import manager.room.Room;
+import server.Server;
 
 public class Commander {
 	private Client client;
-	private GameServer gameServer;
+	private Server gameServer;
 
-	public Commander(GameServer gameServer) {
+	public Commander(Server gameServer) {
 		this.gameServer = gameServer;
 	}
 

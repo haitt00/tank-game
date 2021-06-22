@@ -1,3 +1,4 @@
+package manager.room;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +9,10 @@ import java.util.Random;
 import java.util.Set;
 
 import org.json.JSONObject;
+
+import commander.opcode.Opcode;
+import manager.client.Client;
+import manager.client.ClientWriter;
 
 public class Room implements Runnable {
 	private String id;

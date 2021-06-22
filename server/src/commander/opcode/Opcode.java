@@ -1,3 +1,4 @@
+package commander.opcode;
 public enum Opcode {
 	// Client sends
 	NEW_ROOM, JOIN_ROOM, EXIT_ROOM, EXIT_GAME, END_GAME,
