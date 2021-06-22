@@ -1,3 +1,4 @@
+package manager.client;
 public class Client {
 	private String name;
 	private String roomId = null;

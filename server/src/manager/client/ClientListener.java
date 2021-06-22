@@ -1,7 +1,13 @@
+package manager.client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+
+import commander.Commander;
+import commander.opcode.Opcode;
+import manager.room.Room;
+import server.Server;
 
 public class ClientListener extends Thread {
 	private Socket socket;
@@ -10,7 +16,7 @@ public class ClientListener extends Thread {
 	private boolean running = false;
 	private Commander commander;
 
-	public ClientListener(Socket socket, GameServer server) {
+	public ClientListener(Socket socket, Server server) {
 		this.socket = socket;
 		this.commander = new Commander(server);
 	}

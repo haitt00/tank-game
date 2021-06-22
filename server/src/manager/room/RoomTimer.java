@@ -1,4 +1,7 @@
+package manager.room;
 import java.io.IOException;
+
+import commander.opcode.Opcode;
 
 public class RoomTimer extends Thread {
 	private Room room;

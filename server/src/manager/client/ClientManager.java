@@ -1,3 +1,4 @@
+package manager.client;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;

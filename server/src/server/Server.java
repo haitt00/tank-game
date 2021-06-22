@@ -1,21 +1,26 @@
+package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class GameServer extends Thread {
+import manager.client.ClientListener;
+import manager.client.ClientManager;
+import manager.room.RoomManager;
+
+public class Server extends Thread {
 	private int serverPort;
 	private String serverName = "Dummy";
 	private ClientManager clientManager;
 	private RoomManager roomManager;
 	private ServerSocket listener;
 
-	public GameServer(int port) {
+	public Server(int port) {
 		this.serverPort = port;
 		this.clientManager = new ClientManager();
 		this.roomManager = new RoomManager();
 	}
 
-	public GameServer(int port, String serverName) {
+	public Server(int port, String serverName) {
 		this(port);
 		this.serverName = serverName;
 	}
