@@ -182,10 +182,7 @@ public class Room implements Runnable {
 		}
 		
 		List<ClientWriter> team1 = getClientsInTeam("1");
-		team1.forEach(member -> System.out.println(member.isClosed()));
 		List<ClientWriter> team2 = getClientsInTeam("2");
-		team2.forEach(member -> System.out.println(member.isClosed()));
-
 				
 		while (running) {
 			boolean team1Out = team1.stream().allMatch(cw -> cw.isClosed());
