@@ -134,7 +134,6 @@ public class Room implements Runnable {
 	}
 	
 	public void broadcastExcept(String clientName, String message) throws IOException{
-		String otherClients = getClientNames().toString();
 		for (String key: clientWriters.keySet()) {
 			if (key.equals(clientName) || clientWriters.get(key).isClosed() == true) 
 				continue;
