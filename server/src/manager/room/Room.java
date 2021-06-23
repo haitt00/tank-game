@@ -190,6 +190,7 @@ public class Room implements Runnable {
 			if (team1Out) {
 				try {
 					broadcast(Opcode.END_GAME.name());
+					running = false;
 					break;
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -199,6 +200,7 @@ public class Room implements Runnable {
 			if (team2Out) {
 				try {
 					broadcast(Opcode.END_GAME.name());
+					running = false;
 					break;
 				} catch (IOException e) {
 					e.printStackTrace();
