@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import logic.Constants;
+import logic.Game;
 import network.Client;
 import ui.LogOnScene;
 
@@ -42,7 +43,7 @@ public class Main extends Application{
 		primaryStage.setScene(new LogOnScene());
 		primaryStage.setTitle(Constants.GAME_TITLE);
 		primaryStage.show();
-//		Game game = new Game();
+//		Game game = new Game(2);
 //		primaryStage.setScene(game.getGameScene());
 //		primaryStage.setTitle(Constants.GAME_TITLE);
 //		primaryStage.show();

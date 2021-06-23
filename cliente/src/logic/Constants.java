@@ -11,13 +11,13 @@ public class Constants {
 	public static final int LOBBY_HEIGHT = 250;
 	public static final int WAITING_WIDTH = 400;
 	public static final int WAITING_HEIGHT = 400;
-	public static final int GAME_WIDTH = 560;
-	public static final int GAME_HEIGHT = 440;
+	public static final int GAME_WIDTH = 510;
+	public static final int GAME_HEIGHT = 370;
 	public static final int RESULT_WIDTH = 300;
 	public static final int RESULT_HEIGHT = 200;
 	public static final String GAME_TITLE = "Tank Game";
 	public static final int PLAYERS_IN_GAME = 4;
-	public static final int GAME_SIZE = 360;
+	public static final int GAME_SIZE = 330;
 	
 	public static final KeyCode KEY_UP = KeyCode.UP;
 	public static final KeyCode KEY_DOWN = KeyCode.DOWN;
