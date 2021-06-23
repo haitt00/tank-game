@@ -127,13 +127,17 @@ public class Room implements Runnable {
 
 	public void broadcast(Opcode opcode, String message) throws IOException {
 		for (String key : clientWriters.keySet()) {
+			if (clientWriters.get(key).isClosed() == true)
+				continue;
 			clientWriters.get(key).sendPacket(opcode, message);
 		}
 	}
 	
 	public void broadcastExcept(String clientName, String message) throws IOException{
+		String otherClients = getClientNames().toString();
+		System.out.println("Broadcast from " + clientName + " to: " + otherClients + ": " + message);
 		for (String key: clientWriters.keySet()) {
-			if (key.equals(clientName)) 
+			if (key.equals(clientName) || clientWriters.get(key).isClosed() == true) 
 				continue;
 			clientWriters.get(key).sendPacket(message);
 		}

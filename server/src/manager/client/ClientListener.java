@@ -1,4 +1,5 @@
 package manager.client;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,15 +36,15 @@ public class ClientListener extends Thread {
 
 	public void closeConnection() {
 		try {
-			commander.requestDisconnectClient();
-
 			String roomId = commander.getClient().getRoomId();
 			if (roomId == null)
 				return;
 
 			Room currentRoom = commander.requestFindRoom(roomId);
-			if (currentRoom != null)
+			if (currentRoom != null) {
+				System.out.println("Remove client" + commander.getClient().getName());
 				currentRoom.removeClient(commander.getClient().getName());
+			}
 
 			synchronized (this) {
 				if (currentRoom.isEmpty()) {
@@ -51,6 +52,8 @@ public class ClientListener extends Thread {
 				}
 			}
 			
+			commander.requestDisconnectClient();
+
 			reader.close();
 			writer.close();
 			socket.close();
