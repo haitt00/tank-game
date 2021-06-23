@@ -6,12 +6,15 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import logic.Constants;
 import network.Client;
 
 public class LogOnScene extends GeneralScene{
 	TextField tfName;
 	Button btnGo;
-	public LogOnScene() {	}
+	public LogOnScene() {
+		super(Constants.LOGON_WIDTH, Constants.LOGON_HEIGHT);
+	}
 
 	@Override
 	public void addContent() {
