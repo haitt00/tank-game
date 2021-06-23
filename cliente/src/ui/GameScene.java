@@ -113,7 +113,7 @@ public class GameScene extends GeneralScene {
 			}
 
 			if (teamId.equals(ownTeamId)) {
-				nameLabel.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, nameLabel.getFont().getSize()));
+				nameLabel.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, nameLabel.getFont().getSize() + 3));
 			}
 			hb.getChildren().addAll(nameLabel, hbHeart);
 			scorePane.getChildren().add(hb);
