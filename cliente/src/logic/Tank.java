@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import ui.GameScene;
 
 public class Tank extends GameObject{
 	String name;

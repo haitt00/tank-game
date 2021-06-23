@@ -35,10 +35,6 @@ public class ClientListener extends Thread {
 
 	public void closeConnection() {
 		try {
-			reader.close();
-			writer.close();
-			socket.close();
-
 			commander.requestDisconnectClient();
 
 			String roomId = commander.getClient().getRoomId();
@@ -54,6 +50,10 @@ public class ClientListener extends Thread {
 					commander.requestRemoveRoom(roomId);
 				}
 			}
+			
+			reader.close();
+			writer.close();
+			socket.close();
 		} catch (IOException e) {
 			System.out.println("Error handling client#" + commander.getClient().getName() + ": close connection");
 		}

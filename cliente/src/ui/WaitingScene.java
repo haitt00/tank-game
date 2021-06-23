@@ -6,7 +6,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
@@ -21,7 +20,7 @@ public class WaitingScene extends GeneralScene{
 	Label lblRoom;
 	ArrayList<TextField> tfPlayers;
 	public WaitingScene() {	
-		super();
+		super(Constants.WAITING_WIDTH, Constants.WAITING_HEIGHT);
 		
 		Menu leaveRoom = new Menu("Leave Room");
 		MenuHelper.onAction(leaveRoom);

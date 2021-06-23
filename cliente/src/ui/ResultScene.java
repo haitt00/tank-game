@@ -9,14 +9,13 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.layout.VBox;
+import logic.Constants;
 import logic.Game;
-import logic.Tank;
 import main.Main;
-import network.Client;
 
 public class ResultScene extends GeneralScene{
 	public ResultScene() {
-		super();
+		super(Constants.RESULT_WIDTH, Constants.RESULT_HEIGHT);
 		
 		Menu leaveRoom = new Menu("Start new game");
 		MenuHelper.onAction(leaveRoom);
