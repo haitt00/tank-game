@@ -42,6 +42,17 @@ public class Room implements Runnable {
 	public Map<String, ClientWriter> getClientWriters() {
 		return clientWriters;
 	}
+	
+	public List<ClientWriter> getClientsInTeam(String teamId){
+		List<ClientWriter> team = new ArrayList<ClientWriter>();
+		for (String key : clientWriters.keySet()) {
+			Client c = clients.get(key);
+			if (c.getTeamId() == teamId) {
+				team.add(clientWriters.get(key));
+			}
+		}
+		return team;
+	}
 
 	public Set<String> getClientNames() {
 		return clients.keySet();
@@ -121,6 +132,8 @@ public class Room implements Runnable {
 
 	public void broadcast(String message) throws IOException {
 		for (String key : clientWriters.keySet()) {
+			if (clientWriters.get(key).isClosed() == true)
+				continue;
 			clientWriters.get(key).sendPacket(message);
 		}
 	}
@@ -168,9 +181,29 @@ public class Room implements Runnable {
 				}
 			}
 		}
+		
+		List<ClientWriter> team1 = getClientsInTeam("1");
+		List<ClientWriter> team2 = getClientsInTeam("2");
 				
 		while (running) {
-
+			boolean team1Out = team1.stream().allMatch(cw -> cw.isClosed());
+			if (team1Out) {
+				try {
+					broadcast(Opcode.END_GAME.name());
+					break;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			boolean team2Out = team2.stream().allMatch(cw -> cw.isClosed());
+			if (team2Out) {
+				try {
+					broadcast(Opcode.END_GAME.name());
+					break;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		
 		for (String key: clients.keySet()) {

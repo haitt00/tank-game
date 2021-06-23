@@ -36,13 +36,16 @@ public class ClientListener extends Thread {
 
 	public void closeConnection() {
 		try {
-			String roomId = commander.getClient().getRoomId();
+			Client c = commander.getClient();
+			if (c == null)
+				return;
+			
+			String roomId = c.getRoomId();
 			if (roomId == null)
 				return;
 
 			Room currentRoom = commander.requestFindRoom(roomId);
 			if (currentRoom != null) {
-				System.out.println("Remove client" + commander.getClient().getName());
 				currentRoom.removeClient(commander.getClient().getName());
 			}
 
