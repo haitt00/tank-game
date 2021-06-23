@@ -11,8 +11,8 @@ public class Constants {
 	public static final int LOBBY_HEIGHT = 250;
 	public static final int WAITING_WIDTH = 400;
 	public static final int WAITING_HEIGHT = 400;
-	public static final int GAME_WIDTH = 600;
-	public static final int GAME_HEIGHT = 480;
+	public static final int GAME_WIDTH = 560;
+	public static final int GAME_HEIGHT = 440;
 	public static final int RESULT_WIDTH = 300;
 	public static final int RESULT_HEIGHT = 200;
 	public static final String GAME_TITLE = "Tank Game";
