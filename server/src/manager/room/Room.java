@@ -46,8 +46,7 @@ public class Room implements Runnable {
 	public List<ClientWriter> getClientsInTeam(String teamId){
 		List<ClientWriter> team = new ArrayList<ClientWriter>();
 		for (String key : clientWriters.keySet()) {
-			Client c = clients.get(key);
-			if (c.getTeamId() == teamId) {
+			if (clients.get(key).getTeamId().equals(teamId)) {
 				team.add(clientWriters.get(key));
 			}
 		}
@@ -183,7 +182,10 @@ public class Room implements Runnable {
 		}
 		
 		List<ClientWriter> team1 = getClientsInTeam("1");
+		team1.forEach(member -> System.out.println(member.isClosed()));
 		List<ClientWriter> team2 = getClientsInTeam("2");
+		team2.forEach(member -> System.out.println(member.isClosed()));
+
 				
 		while (running) {
 			boolean team1Out = team1.stream().allMatch(cw -> cw.isClosed());

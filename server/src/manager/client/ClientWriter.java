@@ -7,11 +7,10 @@ import commander.opcode.Opcode;
 
 public class ClientWriter {
 	private DataOutputStream writer;
-	private boolean closed = true;
+	private boolean closed = false;
 
 	public ClientWriter(Socket socket) throws IOException {
 		this.writer = new DataOutputStream(socket.getOutputStream());
-		this.closed = false;
 	}
 
 	public DataOutputStream getWriter() {
