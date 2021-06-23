@@ -157,7 +157,7 @@ public class Game {
 	}
 	
 	public CollisionDetail checkCollision(GameObject object, double newX, double newY, Direction direction){
-		System.out.println("before check: "+newX+" "+newY);
+//		System.out.println("before check: "+newX+" "+newY);
 		int boundCellStart, boundCellEnd;
 		int boundSweepStart, boundSweepEnd;
 		if(direction == Direction.UP) {
@@ -168,9 +168,12 @@ public class Game {
 			for (int i = boundSweepStart; i >= boundSweepEnd; i--) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
 					GameObject tankCollided = this.checkGridHasTank(j, i);
+					if(tankCollided==object) {
+						continue;
+					}
 					if(wallMatrix[j][i] == 1 || (tankCollided!=null)) {
 						double newPos = getPosEdge(j, i, Direction.getOpposite(direction)) + object.size / 2;
-						System.out.println("after check: "+newX+" "+newPos);
+//						System.out.println("after check: "+newX+" "+newPos);
 						return new CollisionDetail(newPos, tankCollided);
 					}
 				}	
@@ -181,12 +184,20 @@ public class Game {
 			boundCellEnd = getGridIndex(object.x + object.size / 2, false);
 			boundSweepStart = getGridIndex(object.y + object.size / 2, true);
 			boundSweepEnd = getGridIndex(newY + object.size / 2, false);
+//			System.out.println("boundCell: "+boundCellStart+" "+boundCellEnd);
+//			System.out.println("boundSweep: "+boundSweepStart+" "+boundSweepEnd);
 			for (int i = boundSweepStart; i <= boundSweepEnd; i++) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
 					GameObject tankCollided = this.checkGridHasTank(j, i);
+					if(tankCollided==object) {
+						continue;
+					}
+//					System.out.println("j i "+j+" "+i);
+//					System.out.println("tankCollided"+tankCollided);
+//					System.out.println("wallMatrix[j][i]"+wallMatrix[j][i]);
 					if(wallMatrix[j][i] == 1 || (tankCollided!=null)) {
 						double newPos = getPosEdge(j, i, Direction.getOpposite(direction)) - object.size / 2;
-						System.out.println("after check: "+newX+" "+newPos);
+//						System.out.println("after check: "+newX+" "+newPos);
 						return new CollisionDetail(newPos, tankCollided);
 					}
 				}	
@@ -200,9 +211,12 @@ public class Game {
 			for (int i = boundSweepStart; i <= boundSweepEnd; i++) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
 					GameObject tankCollided = this.checkGridHasTank(i, j);
+					if(tankCollided==object) {
+						continue;
+					}
 					if(wallMatrix[i][j] == 1 || (tankCollided!=null)) {
 						double newPos = getPosEdge(i, j, Direction.getOpposite(direction)) - object.size / 2;
-						System.out.println("after check: "+newPos+" "+newY);
+//						System.out.println("after check: "+newPos+" "+newY);
 						return new CollisionDetail(newPos, tankCollided);
 					}
 				}	
@@ -216,15 +230,18 @@ public class Game {
 			for (int i = boundSweepStart; i >= boundSweepEnd; i--) {
 				for(int j = boundCellStart; j <= boundCellEnd; j++) {
 					GameObject tankCollided = this.checkGridHasTank(i, j);
+					if(tankCollided==object) {
+						continue;
+					}
 					if(wallMatrix[i][j] == 1 || (tankCollided!=null)) {
 						double newPos = getPosEdge(i, j, Direction.getOpposite(direction)) + object.size / 2;
-						System.out.println("after check: "+newPos+" "+newY);
+//						System.out.println("after check: "+newPos+" "+newY);
 						return new CollisionDetail(newPos, tankCollided);
 					}
 				}	
 			}
 		}
-		
+//		System.out.println("after check: "+newX+" "+newY);
 		if(direction==Direction.UP||direction==Direction.DOWN) {
 			return new CollisionDetail(newY, null);
 		}
