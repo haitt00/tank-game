@@ -20,6 +20,7 @@ import main.Main;
 import ui.GameScene;
 import ui.LobbyScene;
 import ui.LogOnScene;
+import ui.ResultScene;
 import ui.WaitingScene;
 
 public class Client implements Runnable{
@@ -83,6 +84,9 @@ public class Client implements Runnable{
 				break;
 			case Opcode.SET_TRAP:
 				receiveSetTrap(params);
+				break;
+			case Opcode.END_GAME:
+				receiveEndGame(params);
 				break;
 	//		default:
 	//			sendError("Invalid packet " + input);
@@ -222,7 +226,11 @@ public class Client implements Runnable{
 		System.out.println("receiveSetTrap");
 		((GameScene) Main.getCurrentScene()).getGame().handleSetTrap(params[1]);
 	}
-
+	private void receiveEndGame(String[] params) {
+		Game g = ((GameScene) Main.getCurrentScene()).getGame();
+		g.setWinners(g.getPlayerNamesInTeam(g.getSelfTank().teamId));
+		Main.changeScene(new ResultScene());
+	}
 	@Override
 	public void run() {
 		//set up the socket

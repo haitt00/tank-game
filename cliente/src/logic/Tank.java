@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 
 public class Tank extends GameObject{
 	String name;
-	String teamId;
+	public String teamId;
 	int lives;
 	Trap justSetTrap;
 	boolean canSetTrap = true;

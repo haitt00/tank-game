@@ -329,7 +329,7 @@ public class Game {
 		return true;
 		
 	}
-	private ArrayList<String> getPlayerNamesInTeam(String teamId) {
+	public ArrayList<String> getPlayerNamesInTeam(String teamId) {
 		ArrayList<String> result = new ArrayList<String>();
 		for (Entry<String, String> e: this.players.entrySet()) {
 			if(e.getValue().equals(teamId)) {
@@ -349,6 +349,11 @@ public class Game {
 	public ArrayList<String> getWinners() {
 		return winners;
 	}
+
+	public void setWinners(ArrayList<String> winners) {
+		this.winners = winners;
+	}
+	
 	
 	
 }
