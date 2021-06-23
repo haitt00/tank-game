@@ -13,7 +13,7 @@ public class Configs {
 	public static final double TANK_SIZE = WALL_SIZE * 2; 		//48
 	public static final double TRAP_SIZE = WALL_SIZE;			//24
 	
-	public static final double TANK_SPEED = WALL_SIZE / 1;		//24
+	public static final double TANK_SPEED = WALL_SIZE / 4;		//24
 	public static final double MISSILE_SPEED = WALL_SIZE / 2;	//2.4
 	public static final int MAX_LIVES = 3;
 //	public static final int MAX_TRAPS = 2;
